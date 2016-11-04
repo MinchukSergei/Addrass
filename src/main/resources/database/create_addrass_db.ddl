@@ -31,7 +31,7 @@ CREATE TABLE user_data
   user_phone_field VARCHAR(15),
   user_email_field VARCHAR(32),
   user_organization_field VARCHAR(32),
-  user_addrass_field VARCHAR(32),
+  user_address_field VARCHAR(32),
   user_notes_field VARCHAR(64),
   user_photo LONGBLOB
 );
