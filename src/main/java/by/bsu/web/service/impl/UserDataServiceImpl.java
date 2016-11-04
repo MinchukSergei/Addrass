@@ -9,11 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * Created by USER on 04.11.2016.
- */
-@Service("jpaUserDataService")
+@Service
 public class UserDataServiceImpl implements UserDataService {
+
     @Autowired
     private UserDataRepository userDataRepository;
 
@@ -24,4 +22,5 @@ public class UserDataServiceImpl implements UserDataService {
     public UserData findByUserLogin(String userLogin) {
         return userDataRepository.findByUserLogin(userLogin);
     }
+
 }

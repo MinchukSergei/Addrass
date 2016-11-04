@@ -2,9 +2,6 @@ package by.bsu.web.entity;
 
 import javax.persistence.*;
 
-/**
- * Created by USER on 04.11.2016.
- */
 @Entity
 @Table(name = "user_data")
 public class UserData {
