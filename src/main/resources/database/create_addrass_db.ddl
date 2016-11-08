@@ -1,13 +1,10 @@
 CREATE DATABASE IF NOT EXISTS addrass_db CHARACTER SET utf8;
 
-
 CREATE TABLE user_icon
 (
   pk_id BIGINT(20) PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  name VARCHAR(32) NOT NULL,
   icon_bytes LONGBLOB NOT NULL
 );
-CREATE UNIQUE INDEX table_name_name_uindex ON user_icon (name);
 
 CREATE TABLE user_group
 (
@@ -32,6 +29,7 @@ CREATE UNIQUE INDEX user_color_color_uindex ON user_color (color);
 
 CREATE TABLE user_data
 (
+  pk_id BIGINT(20) PRIMARY KEY NOT NULL AUTO_INCREMENT,
   user_login VARCHAR(32),
   user_password VARCHAR(64),
   user_name VARCHAR(64) NOT NULL,
@@ -40,8 +38,7 @@ CREATE TABLE user_data
   user_organization_field VARCHAR(32),
   user_address_field VARCHAR(32),
   user_notes_field VARCHAR(64),
-  fk_user_photo BIGINT(20),
-  pk_id BIGINT(20) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  fk_user_photo BIGINT(20) NOT NULL,
   CONSTRAINT user_data_user_icon_pk_id_fk FOREIGN KEY (fk_user_photo) REFERENCES user_icon (pk_id)
 );
 CREATE INDEX user_data_user_icon_pk_id_fk ON user_data (fk_user_photo);

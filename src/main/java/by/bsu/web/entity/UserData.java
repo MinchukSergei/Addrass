@@ -6,34 +6,46 @@ import javax.persistence.*;
 @Table(name = "user_data")
 public class UserData {
     @Id
-    @Column(name = "user_login", nullable = false)
+    @Column(name = "pk_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long pkId;
+
+    @Column(name = "user_login")
     private String userLogin;
 
-    @Column(name = "user_password", nullable = false)
+    @Column(name = "user_password")
     private String userPassword;
 
     @Column(name = "user_name", nullable = false)
     private String userName;
 
-    @Column(name = "user_phone_field", nullable = false)
+    @Column(name = "user_phone_field")
     private String userPhoneField;
 
-    @Column(name = "user_email_field", nullable = false)
+    @Column(name = "user_email_field")
     private String userEmailField;
 
-    @Column(name = "user_organization_field", nullable = false)
+    @Column(name = "user_organization_field")
     private String userOrganizationField;
 
-    @Column(name = "user_address_field", nullable = false)
+    @Column(name = "user_address_field")
     private String userAddressField;
 
-    @Column(name = "user_notes_field", nullable = false)
+    @Column(name = "user_notes_field")
     private String userNotesField;
 
-    @Column(name = "user_photo", nullable = false)
-    private byte[] userPhoto;
+    @Column(name = "fk_user_photo")
+    private long userPhoto;
 
     public UserData() {
+    }
+
+    public long getPkId() {
+        return pkId;
+    }
+
+    public void setPkId(long pkId) {
+        this.pkId = pkId;
     }
 
     public String getUserLogin() {
@@ -100,12 +112,11 @@ public class UserData {
         this.userNotesField = userNotesField;
     }
 
-    public byte[] getUserPhoto() {
+    public long getUserPhoto() {
         return userPhoto;
     }
 
-    public void setUserPhoto(byte[] userPhoto) {
+    public void setUserPhoto(long userPhoto) {
         this.userPhoto = userPhoto;
     }
-
 }
