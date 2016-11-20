@@ -7,5 +7,5 @@
     <import resource="spring-hibernate-config.xml"/>
     <import resource="spring-api-config.xml"/>
     <import resource="spring-web-servlet.xml"/>
-
+    <import resource="spring-security.xml"/>
 </beans>
