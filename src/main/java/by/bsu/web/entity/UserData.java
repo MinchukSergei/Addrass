@@ -1,6 +1,10 @@
 package by.bsu.web.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "user_data")
@@ -8,7 +12,7 @@ public class UserData {
     @Id
     @Column(name = "pk_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long pkId;
+    private Long pkId;
 
     @Column(name = "user_login")
     private String userLogin;
@@ -35,16 +39,16 @@ public class UserData {
     private String userNotesField;
 
     @Column(name = "fk_user_photo")
-    private long userPhoto;
+    private Long userPhoto;
 
     public UserData() {
     }
 
-    public long getPkId() {
+    public Long getPkId() {
         return pkId;
     }
 
-    public void setPkId(long pkId) {
+    public void setPkId(Long pkId) {
         this.pkId = pkId;
     }
 
@@ -56,10 +60,12 @@ public class UserData {
         this.userLogin = userLogin;
     }
 
+    @JsonIgnore
     public String getUserPassword() {
         return userPassword;
     }
 
+    @JsonProperty
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
     }
@@ -112,11 +118,11 @@ public class UserData {
         this.userNotesField = userNotesField;
     }
 
-    public long getUserPhoto() {
+    public Long getUserPhoto() {
         return userPhoto;
     }
 
-    public void setUserPhoto(long userPhoto) {
+    public void setUserPhoto(Long userPhoto) {
         this.userPhoto = userPhoto;
     }
 }

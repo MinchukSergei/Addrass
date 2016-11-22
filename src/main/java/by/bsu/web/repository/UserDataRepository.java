@@ -3,6 +3,6 @@ package by.bsu.web.repository;
 import by.bsu.web.entity.UserData;
 import org.springframework.data.repository.CrudRepository;
 
-public interface UserDataRepository extends CrudRepository<UserData, Integer> {
+public interface UserDataRepository extends CrudRepository<UserData, Long> {
     UserData findByUserLogin(String userLogin);
 }

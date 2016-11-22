@@ -1,4 +1,4 @@
-package by.bsu.web.api;
+package by.bsu.web.api.util;
 
 public class ErrorEntity {
 

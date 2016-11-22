@@ -9,9 +9,9 @@
     <http pattern="resources/**" security="none"/>
 
     <http use-expressions="true">
-        <intercept-url pattern="/login" access="permitAll"/>
-        <intercept-url pattern="/" access="hasRole('USER')"/>
-        <intercept-url pattern="/api/icon/**" access="isAuthenticated()"/>
+        <intercept-url pattern="/**" access="permitAll"/>
+        <!--<intercept-url pattern="/" access="hasRole('USER')"/>-->
+        <!--<intercept-url pattern="/api/icon/**" access="isAuthenticated()"/>-->
 
         <csrf disabled="true"/>
 
