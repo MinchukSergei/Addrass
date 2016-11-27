@@ -39,7 +39,12 @@ public class UserData {
     private String userNotesField;
 
     @Column(name = "fk_user_photo")
+    @JsonIgnore
     private Long userPhoto;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_user_photo", insertable = false, updatable = false)
+    private UserIcon fkUserPhotoEntity;
 
     public UserData() {
     }
@@ -124,5 +129,13 @@ public class UserData {
 
     public void setUserPhoto(Long userPhoto) {
         this.userPhoto = userPhoto;
+    }
+
+    public UserIcon getFkUserPhotoEntity() {
+        return fkUserPhotoEntity;
+    }
+
+    public void setFkUserPhotoEntity(UserIcon fkUserPhotoEntity) {
+        this.fkUserPhotoEntity = fkUserPhotoEntity;
     }
 }

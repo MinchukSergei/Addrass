@@ -25,11 +25,11 @@ public class ContactList {
     @JoinColumn(name = "fk_user_friend", nullable = false)
     private UserData fkUserFriend;
 
-    @Column(name = "fk_user_color", nullable = false)
+    @Column(name = "fk_user_color")
     private Byte fkUserColor;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_user_color", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "fk_user_color", insertable = false, updatable = false)
     private UserColor fkUserColorEntity;
 
     public Long getPkId() {

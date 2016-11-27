@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 
 public interface UserIconRepository extends CrudRepository<UserIcon, Long> {
-
+    UserIcon findByIconName(String name);
 }

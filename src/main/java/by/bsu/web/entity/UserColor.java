@@ -15,22 +15,35 @@ public class UserColor {
     @JsonIgnore
     private Byte pkId;
 
-    @Column(name = "color", nullable = false)
-    private int color;
+    @Column(name = "color", nullable = false, unique = true)
+    private Integer color;
+
+    @Column(name = "name", nullable = false, unique = true)
+    private String name;
 
     public Byte getPkId() {
         return pkId;
     }
 
+    @JsonIgnore
     public void setPkId(Byte pkId) {
         this.pkId = pkId;
     }
 
-    public int getColor() {
+    public Integer getColor() {
         return color;
     }
 
-    public void setColor(int color) {
+    @JsonIgnore
+    public void setColor(Integer color) {
         this.color = color;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

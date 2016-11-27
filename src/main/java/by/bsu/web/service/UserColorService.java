@@ -5,4 +5,5 @@ import by.bsu.web.entity.UserColor;
 
 public interface UserColorService {
     UserColor findUserColorByPkId(Byte id);
+    UserColor findByName(String name);
 }

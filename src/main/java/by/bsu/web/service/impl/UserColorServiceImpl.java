@@ -15,4 +15,9 @@ public class UserColorServiceImpl implements UserColorService {
     public UserColor findUserColorByPkId(Byte id) {
         return userColorRepository.findUserColorByPkId(id);
     }
+
+    @Override
+    public UserColor findByName(String name) {
+        return userColorRepository.findUserColorByName(name);
+    }
 }
