@@ -8,17 +8,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "user_color")
-public class UserColor {
-    public final static String DEFAULT_COLOR = "default";
+@Table(name = "user_group")
+public class UserGroup {
+    public static final String DEFAULT_GROUP = "other";
 
     @Id
     @Column(name = "pk_id", nullable = false)
-    @JsonIgnore
     private Byte pkId;
-
-    @Column(name = "color", nullable = false, unique = true)
-    private Integer color;
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
@@ -30,15 +26,6 @@ public class UserColor {
     @JsonIgnore
     public void setPkId(Byte pkId) {
         this.pkId = pkId;
-    }
-
-    public Integer getColor() {
-        return color;
-    }
-
-    @JsonIgnore
-    public void setColor(Integer color) {
-        this.color = color;
     }
 
     public String getName() {

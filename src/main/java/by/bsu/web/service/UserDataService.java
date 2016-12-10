@@ -9,4 +9,5 @@ public interface UserDataService {
     UserData findByUserLogin(String userLogin);
     UserData save(UserData userData);
     void delete(UserData userData);
+    UserData findByPkId(Long id);
 }

@@ -21,14 +21,14 @@ public class ContactList {
     @Column(name = "fk_user_main", nullable = false)
     private Long fkUserMain;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "fk_user_friend", nullable = false)
     private UserData fkUserFriend;
 
     @Column(name = "fk_user_color")
     private Byte fkUserColor;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "fk_user_color", insertable = false, updatable = false)
     private UserColor fkUserColorEntity;
 

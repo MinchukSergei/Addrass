@@ -14,9 +14,6 @@ import java.util.List;
 
 @Service
 public class UserDataServiceImpl implements UserDataService {
-    @PersistenceContext
-    private EntityManager em;
-
 
     @Autowired
     private UserDataRepository userDataRepository;
@@ -37,5 +34,10 @@ public class UserDataServiceImpl implements UserDataService {
     @Override
     public void delete(UserData userData) {
         userDataRepository.delete(userData);
+    }
+
+    @Override
+    public UserData findByPkId(Long id) {
+        return userDataRepository.findOne(id);
     }
 }

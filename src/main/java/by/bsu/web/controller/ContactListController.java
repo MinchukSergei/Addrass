@@ -37,7 +37,6 @@ public class ContactListController {
     @ResponseBody
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public List<ContactList> getAllLocalContacts() {
-
         UserData currentUser = sessionController.getAuthorizedUser();
         return contactListRepository.findByFkUserMain(currentUser.getPkId());
     }
