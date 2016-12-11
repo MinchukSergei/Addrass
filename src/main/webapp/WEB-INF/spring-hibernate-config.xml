@@ -37,9 +37,9 @@
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://localhost:3306/addrass_db"/>
-        <property name="username" value="root"/>
-        <property name="password" value="318114275"/>
+        <property name="url" value="jdbc:mysql://us-cdbr-iron-east-04.cleardb.net:3306/heroku_039412a6d05bd2b"/>
+        <property name="username" value="b09d3364a3a5af"/>
+        <property name="password" value="a54bfd65"/>
     </bean>
 
     <context:annotation-config/>
