@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface ContactListRepository extends CrudRepository<ContactList, Long> {
     List<ContactList> findByFkUserMain(Long id);
-    ContactList findByFkUserMainAndFkUserFriend(Long ownerId, UserData friend);
+    ContactList findByFkUserMainAndFkUserFriend(UserData owner, UserData friend);
 }

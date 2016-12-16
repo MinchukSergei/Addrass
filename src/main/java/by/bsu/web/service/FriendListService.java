@@ -5,14 +5,12 @@ import by.bsu.web.entity.FriendList;
 import by.bsu.web.entity.UserData;
 import by.bsu.web.entity.UserGroup;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.List;
 
 public interface FriendListService {
-    List<FriendList> findByFkUserMainNotBlackList(Long id);
-    List<FriendList> findByFkUserMainNotBlackListAndGroup(Long id, UserGroup group);
-    List<FriendList> findByFkUserMainBlackList(Long id);
-    List<FriendList> findByFkUserMain(Long id);
+    FriendList findByPkId(Long id);
     FriendList save(FriendList friendList);
-    FriendList findByFkUserMainAndFkUserFriendEntity(Long main, UserData friend);
+    FriendList findByFkUserMainAndFkUserFriendEntity(UserData owner, UserData friend);
     void delete(Long id);
 }

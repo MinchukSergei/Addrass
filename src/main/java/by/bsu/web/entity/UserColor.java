@@ -48,4 +48,25 @@ public class UserColor {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserColor color1 = (UserColor) o;
+
+        if (pkId != null ? !pkId.equals(color1.pkId) : color1.pkId != null) return false;
+        if (color != null ? !color.equals(color1.color) : color1.color != null) return false;
+        return name != null ? name.equals(color1.name) : color1.name == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = pkId != null ? pkId.hashCode() : 0;
+        result = 31 * result + (color != null ? color.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
+    }
 }

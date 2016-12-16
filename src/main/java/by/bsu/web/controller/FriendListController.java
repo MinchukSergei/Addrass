@@ -16,7 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/friend")
@@ -37,82 +39,86 @@ public class FriendListController {
     @Autowired
     private UserDataService userDataService;
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseEntity<String> addFriend(@RequestBody FriendList friendList) {
-        UserData userData = userDataService.findByPkId(friendList.getFkUserFriendEntity().getPkId());
-        UserData current = sessionController.getAuthorizedUser();
-        HttpStatus result;
+    @RequestMapping(method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity addFriendByLogin(@RequestBody FriendList friendList) {
+        UserData currentUser = sessionController.getAuthorizedUser();
+        HttpStatus status;
 
-        if (userData != null) {
-            UserGroup group = userGroupService.findByName(friendList.getFkUserGroupEntity().getName());
-            UserColor color = userColorService.findByName(friendList.getFkUserColorEntity().getName());
-            friendList.setFkUserGroupEntity(group);
-            friendList.setFkUserFriendEntity(userData);
-            friendList.setFkUserMain(current.getPkId());
-            friendList.setFkUserColorEntity(color);
+        UserData friend = userDataService.findByUserLogin(friendList.getFkUserFriend().getUserLogin());
 
-            FriendList exists = friendListService.findByFkUserMainAndFkUserFriendEntity(current.getPkId(), userData);
-            if (exists == null) {
-                friendListService.save(friendList);
-                result = HttpStatus.OK;
-            } else {
-                result = HttpStatus.BAD_REQUEST;
+        if (friend == null) {
+            status = HttpStatus.NOT_FOUND;
+        } else {
+            UserData fetchedUser = userDataService.findUserDateByIdAndFetchFriendList(currentUser.getPkId());
+            Set<FriendList> friends = new HashSet<>();
+
+            if (fetchedUser != null) {
+                friends = fetchedUser.getFriends();
             }
-        } else {
-            result = HttpStatus.NOT_FOUND;
+
+            FriendList oldFriendList = friendListService.findByFkUserMainAndFkUserFriendEntity(currentUser, friend);
+
+            if (friends.contains(oldFriendList)) {
+                status = HttpStatus.BAD_REQUEST;
+            } else {
+                UserColor color = null;
+                if (friendList.getFkUserColor() != null) {
+                    color = userColorService.findByName(friendList.getFkUserColor().getName());
+                }
+                UserGroup group = null;
+                if (friendList.getFkUserGroup() != null) {
+                    group = userGroupService.findByName(friendList.getFkUserGroup().getName());
+                }
+                friendList.setFkUserMain(currentUser);
+                friendList.setFkUserColor(color);
+                friendList.setFkUserGroup(group);
+                friendList.setFkUserFriend(friend);
+                friends.add(friendList);
+                currentUser.setFriends(friends);
+                userDataService.save(currentUser);
+                status = HttpStatus.OK;
+            }
         }
 
-        return new ResponseEntity<>(result);
+        return new ResponseEntity(status);
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public ResponseEntity<String> deleteFriendFromList(@RequestParam Long id) {
-        UserData current = sessionController.getAuthorizedUser();
-        UserData friend = userDataService.findByPkId(id);
-        FriendList exists = friendListService.findByFkUserMainAndFkUserFriendEntity(current.getPkId(), friend);
-        HttpStatus result;
-        if (exists == null) {
-            result = HttpStatus.BAD_REQUEST;
-        } else {
-            friendListService.delete(exists.getPkId());
-            result = HttpStatus.OK;
-        }
-        return new ResponseEntity<>(result);
-    }
-
-    @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public ResponseEntity<String> editFriend(@RequestBody FriendList friendList) {
-        UserData userData = userDataService.findByPkId(friendList.getFkUserFriendEntity().getPkId());
-        UserData current = sessionController.getAuthorizedUser();
-        HttpStatus result;
-
-        if (userData != null) {
-            UserGroup group = userGroupService.findByName(friendList.getFkUserGroupEntity().getName());
-            UserColor color = userColorService.findByName(friendList.getFkUserColorEntity().getName());
-            FriendList exists = friendListService.findByFkUserMainAndFkUserFriendEntity(current.getPkId(), userData);
-            exists.setFkUserColorEntity(color);
-            exists.setFkUserGroupEntity(group);
-            exists.setBlackList(friendList.getBlackList());
-
-            friendListService.save(exists);
-            result = HttpStatus.OK;
-        } else {
-            result = HttpStatus.NOT_FOUND;
-        }
-        return new ResponseEntity<>(result);
-    }
-
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.PUT)
     @ResponseBody
-    public List<FriendList> getAllFriendsNBlackList() {
-        UserData current = sessionController.getAuthorizedUser();
-        return friendListService.findByFkUserMainNotBlackList(current.getPkId());
+    public ResponseEntity editFriend(@RequestBody FriendList friendList) {
+        UserData currentUser = sessionController.getAuthorizedUser();
+        HttpStatus status;
+
+        UserData fetchedUser = userDataService.findUserDateByIdAndFetchFriendList(currentUser.getPkId());
+        Set<FriendList> friends = new HashSet<>();
+        if (fetchedUser != null) {
+            friends = fetchedUser.getFriends();
+        }
+
+        FriendList oldFriendList = friendListService.findByPkId(friendList.getPkId());
+        if (friends.contains(oldFriendList)) {
+            friends.remove(oldFriendList);
+            UserColor color = null;
+            if (friendList.getFkUserColor() != null) {
+                color = userColorService.findByName(friendList.getFkUserColor().getName());
+            }
+            UserGroup group = null;
+            if (friendList.getFkUserGroup() != null) {
+                group = userGroupService.findByName(friendList.getFkUserGroup().getName());
+            }
+            oldFriendList.setFkUserColor(color);
+            oldFriendList.setFkUserGroup(group);
+            oldFriendList.setBlackList(friendList.getBlackList());
+            friends.add(oldFriendList);
+            currentUser.setFriends(friends);
+            userDataService.save(currentUser);
+            status = HttpStatus.OK;
+        } else {
+            status = HttpStatus.FORBIDDEN;
+        }
+
+        return new ResponseEntity(status);
     }
 
-    @RequestMapping(value = "/all/b", method = RequestMethod.GET)
-    @ResponseBody
-    public List<FriendList> getAllFriendBlackList() {
-        UserData current = sessionController.getAuthorizedUser();
-        return friendListService.findByFkUserMainBlackList(current.getPkId());
-    }
 }

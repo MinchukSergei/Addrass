@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import java.util.Arrays;
 
 @Entity
 @Table(name = "user_icon")
@@ -51,5 +52,26 @@ public class UserIcon {
     @JsonProperty
     public void setIconBytes(byte[] iconBytes) {
         this.iconBytes = iconBytes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserIcon userIcon = (UserIcon) o;
+
+        if (pkId != null ? !pkId.equals(userIcon.pkId) : userIcon.pkId != null) return false;
+        if (!Arrays.equals(iconBytes, userIcon.iconBytes)) return false;
+        return iconName != null ? iconName.equals(userIcon.iconName) : userIcon.iconName == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = pkId != null ? pkId.hashCode() : 0;
+        result = 31 * result + Arrays.hashCode(iconBytes);
+        result = 31 * result + (iconName != null ? iconName.hashCode() : 0);
+        return result;
     }
 }

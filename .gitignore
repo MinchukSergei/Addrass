@@ -71,4 +71,5 @@ crashlytics.properties
 crashlytics-build.properties
 
 app.properties
+src/main/resources/hibernate.properties
 
