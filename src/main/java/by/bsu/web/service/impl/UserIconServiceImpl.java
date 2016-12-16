@@ -1,6 +1,5 @@
 package by.bsu.web.service.impl;
 
-import by.bsu.web.entity.UserData;
 import by.bsu.web.entity.UserIcon;
 import by.bsu.web.repository.UserIconRepository;
 import by.bsu.web.service.UserIconService;
@@ -10,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserIconServiceImpl implements UserIconService {
-    private final static int iconNameLength = 20;
+    private final static int ICON_NAME_LENGTH = 20;
 
     @Autowired
     private UserIconRepository userIconRepository;
@@ -21,14 +20,8 @@ public class UserIconServiceImpl implements UserIconService {
 
     @Override
     public UserIcon saveWithRandomName(UserIcon icon) {
-        UserIcon fetchedIcon = userIconRepository.findByIconName(icon.getIconName());
-        if (fetchedIcon != null) {
-            if (!fetchedIcon.getIconName().equals(UserIcon.DEFAULT_ICON_NAME)) {
-                icon.setPkId(fetchedIcon.getPkId());
-            }
-        }
         while (true) {
-            String name = RandomStringUtils.randomAlphanumeric(iconNameLength);
+            String name = RandomStringUtils.randomAlphanumeric(ICON_NAME_LENGTH);
             UserIcon exists = userIconRepository.findByIconName(name);
             if (exists == null) {
                 icon.setIconName(name);
@@ -50,40 +43,7 @@ public class UserIconServiceImpl implements UserIconService {
     }
 
     @Override
-    public UserIcon findDefaultIcon() {
-        return userIconRepository.findByIconName(UserIcon.DEFAULT_ICON_NAME);
-    }
-
-    @Override
-    public void addIconWhenRegister(UserData userData) {
-        UserIcon icon = userData.getFkUserPhotoEntity();
-
-        if (icon == null) {
-            icon = findByIconName(UserIcon.DEFAULT_ICON_NAME);
-        } else {
-            icon = saveWithRandomName(icon);
-            userData.setFkUserPhotoEntity(null);
-        }
-
-        userData.setUserPhoto(icon.getPkId());
-    }
-
-    @Override
-    public boolean editIcon(UserData current, UserIcon newIcon) { //return true if we need to delete photo
-        boolean deleteIcon = false;
-        UserIcon prevIcon = current.getFkUserPhotoEntity();
-        if (newIcon.getIconName() == null) {
-            if (!prevIcon.getIconName().equals(UserIcon.DEFAULT_ICON_NAME)) {
-                deleteIcon = true;
-                current.setUserPhoto(findDefaultIcon().getPkId());
-            }
-        } else {
-            if (newIcon.getIconBytes() != null) {
-                newIcon = saveWithRandomName(newIcon);
-                current.setUserPhoto(newIcon.getPkId());
-            }
-        }
-        current.setFkUserPhotoEntity(null);
-        return deleteIcon;
+    public UserIcon findByPkId(Long id) {
+        return userIconRepository.findOne(id);
     }
 }

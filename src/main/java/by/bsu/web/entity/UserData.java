@@ -38,13 +38,17 @@ public class UserData {
     @Column(name = "user_notes_field")
     private String userNotesField;
 
-    @Column(name = "fk_user_photo")
-    @JsonIgnore
-    private Long userPhoto;
+    @OneToOne
+    @JoinColumn(name = "fk_user_photo")
+    private UserIcon fkUserPhoto;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_user_photo", insertable = false, updatable = false)
-    private UserIcon fkUserPhotoEntity;
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fkUserMain", cascade = CascadeType.ALL)
+    private Set<ContactList> contacts;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fkUserMain", cascade = CascadeType.ALL)
+    private Set<FriendList> friends;
 
     public UserData() {
     }
@@ -123,19 +127,68 @@ public class UserData {
         this.userNotesField = userNotesField;
     }
 
-    public Long getUserPhoto() {
-        return userPhoto;
+    public UserIcon getFkUserPhoto() {
+        return fkUserPhoto;
     }
 
-    public void setUserPhoto(Long userPhoto) {
-        this.userPhoto = userPhoto;
+    public void setFkUserPhoto(UserIcon fkUserPhoto) {
+        this.fkUserPhoto = fkUserPhoto;
     }
 
-    public UserIcon getFkUserPhotoEntity() {
-        return fkUserPhotoEntity;
+    public Set<ContactList> getContacts() {
+        return contacts;
     }
 
-    public void setFkUserPhotoEntity(UserIcon fkUserPhotoEntity) {
-        this.fkUserPhotoEntity = fkUserPhotoEntity;
+    public void setContacts(Set<ContactList> contacts) {
+        this.contacts = contacts;
+    }
+
+    public Set<FriendList> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(Set<FriendList> friends) {
+        this.friends = friends;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserData userData = (UserData) o;
+
+        if (pkId != null ? !pkId.equals(userData.pkId) : userData.pkId != null) return false;
+        if (userLogin != null ? !userLogin.equals(userData.userLogin) : userData.userLogin != null) return false;
+        if (userPassword != null ? !userPassword.equals(userData.userPassword) : userData.userPassword != null)
+            return false;
+        if (userName != null ? !userName.equals(userData.userName) : userData.userName != null) return false;
+        if (userPhoneField != null ? !userPhoneField.equals(userData.userPhoneField) : userData.userPhoneField != null)
+            return false;
+        if (userEmailField != null ? !userEmailField.equals(userData.userEmailField) : userData.userEmailField != null)
+            return false;
+        if (userOrganizationField != null ? !userOrganizationField.equals(userData.userOrganizationField) : userData.userOrganizationField != null)
+            return false;
+        if (userAddressField != null ? !userAddressField.equals(userData.userAddressField) : userData.userAddressField != null)
+            return false;
+        if (userNotesField != null ? !userNotesField.equals(userData.userNotesField) : userData.userNotesField != null)
+            return false;
+        return fkUserPhoto != null ? fkUserPhoto.equals(userData.fkUserPhoto) : userData.fkUserPhoto == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = pkId != null ? pkId.hashCode() : 0;
+        result = 31 * result + (userLogin != null ? userLogin.hashCode() : 0);
+        result = 31 * result + (userPassword != null ? userPassword.hashCode() : 0);
+        result = 31 * result + (userName != null ? userName.hashCode() : 0);
+        result = 31 * result + (userPhoneField != null ? userPhoneField.hashCode() : 0);
+        result = 31 * result + (userEmailField != null ? userEmailField.hashCode() : 0);
+        result = 31 * result + (userOrganizationField != null ? userOrganizationField.hashCode() : 0);
+        result = 31 * result + (userAddressField != null ? userAddressField.hashCode() : 0);
+        result = 31 * result + (userNotesField != null ? userNotesField.hashCode() : 0);
+        result = 31 * result + (fkUserPhoto != null ? fkUserPhoto.hashCode() : 0);
+        return result;
     }
 }

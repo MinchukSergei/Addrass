@@ -10,8 +10,5 @@ public interface UserIconService {
     UserIcon saveWithRandomName(UserIcon icon);
     UserIcon findByIconName(String name);
     void delete(UserIcon icon);
-    UserIcon findDefaultIcon();
-
-    void addIconWhenRegister(UserData userData);
-    boolean editIcon(UserData current, UserIcon newIcon);
+    UserIcon findByPkId(Long id);
 }

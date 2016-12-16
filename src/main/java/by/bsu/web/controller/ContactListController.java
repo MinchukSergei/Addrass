@@ -3,93 +3,146 @@ package by.bsu.web.controller;
 import by.bsu.web.entity.ContactList;
 import by.bsu.web.entity.UserColor;
 import by.bsu.web.entity.UserData;
-import by.bsu.web.entity.UserIcon;
-import by.bsu.web.repository.ContactListRepository;
-import by.bsu.web.repository.UserDataRepository;
+import by.bsu.web.service.ContactListService;
 import by.bsu.web.service.UserColorService;
-import by.bsu.web.service.UserIconService;
+import by.bsu.web.service.UserDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/contact")
 public class ContactListController {
+
+    @Autowired
+    private UserDataService userDataService;
+
     @Autowired
     private UserColorService userColorService;
 
     @Autowired
-    private ContactListRepository contactListRepository;
-
-    @Autowired
-    private UserDataRepository userDataRepository;
-
-    @Autowired
-    private UserIconService userIconService;
-
-    @Autowired
     private SessionController sessionController;
 
+    @Autowired
+    private ContactListService contactListService;
+
+    @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
+    public ResponseEntity addContact(@RequestBody ContactList contactList) {
+        UserData currentUser = sessionController.getAuthorizedUser();
+        HttpStatus status;
+
+        UserData fetchedUser = userDataService.findUserDateByIdAndFetchContactList(currentUser.getPkId());
+        Set<ContactList> contacts;
+        if (fetchedUser == null) {
+            contacts = new HashSet<>();
+        } else {
+            contacts = fetchedUser.getContacts();
+        }
+
+        UserColor color = null;
+        if (contactList.getFkUserColor() != null) {
+            color = userColorService.findByName(contactList.getFkUserColor().getName());
+        }
+
+        userDataService.save(contactList.getFkUserFriend());
+        contactList.setFkUserColor(color);
+        contactList.setFkUserMain(currentUser);
+        contacts.add(contactList);
+        currentUser.setContacts(contacts);
+        userDataService.save(currentUser);
+        status = HttpStatus.OK;
+
+        return new ResponseEntity(status);
+    }
+
     @RequestMapping(value = "/all", method = RequestMethod.GET)
-    public List<ContactList> getAllLocalContacts() {
+    @ResponseBody
+    public ResponseEntity<Set<ContactList>> getAllContacts() {
         UserData currentUser = sessionController.getAuthorizedUser();
-        return contactListRepository.findByFkUserMain(currentUser.getPkId());
-    }
+        UserData fetchedUser = userDataService.findUserDateByIdAndFetchContactList(currentUser.getPkId());
+        Set<ContactList> contacts = new HashSet<>();
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseEntity<String> createContact(@RequestBody ContactList contactList) {
-        UserData currentUser = sessionController.getAuthorizedUser();
-        userIconService.addIconWhenRegister(contactList.getFkUserFriend());
-        UserColor color = userColorService.findByName(contactList.getFkUserColorEntity().getName());
-        contactList.setFkUserColor(color.getPkId());
-        contactList.setFkUserColorEntity(null);
-        contactList.setFkUserMain(currentUser.getPkId());
-        contactListRepository.save(contactList);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public ResponseEntity<String> updateLocalContact(@RequestBody ContactList newContactList) {
-        UserData currentUser = sessionController.getAuthorizedUser();
-        UserData userData = newContactList.getFkUserFriend();
-        ContactList contactList = contactListRepository.findByFkUserMainAndFkUserFriend(currentUser.getPkId(), userData);
-        if (contactList != null) {
-            UserData current = contactList.getFkUserFriend();
-            UserIcon newIcon = userData.getFkUserPhotoEntity();
-            boolean deleteIcon = userIconService.editIcon(current, newIcon);
-
-            userDataRepository.save(current);
-            contactList.setFkUserFriend(current);
-
-            UserColor color = userColorService.findByName(newContactList.getFkUserColorEntity().getName());
-            contactList.setFkUserColor(color.getPkId());
-            contactList.setFkUserColorEntity(null);
-            contactListRepository.save(contactList);
-            if (deleteIcon) {
-                userIconService.delete(current.getFkUserPhotoEntity());
-            }
+        if (fetchedUser != null) {
+            contacts = fetchedUser.getContacts();
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        return new ResponseEntity<>(contacts, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public ResponseEntity<String> deleteLocalContact(@RequestParam Long userId) {
+    @RequestMapping(method = RequestMethod.PUT)
+    @ResponseBody
+    public ResponseEntity editContact(@RequestBody ContactList contactList) {
         UserData currentUser = sessionController.getAuthorizedUser();
-        UserData friend = new UserData();
-        friend.setPkId(userId);
-        ContactList contactList = contactListRepository.findByFkUserMainAndFkUserFriend(currentUser.getPkId(), friend);
-        if (contactList != null) {
-            UserData current = contactList.getFkUserFriend();
-            if (current.getFkUserPhotoEntity().getIconName().equals(UserIcon.DEFAULT_ICON_NAME)) {
-                current.setFkUserPhotoEntity(null);
-            }
-            userDataRepository.delete(userId);
+        HttpStatus status;
+
+        UserData fetchedUser = userDataService.findUserDateByIdAndFetchContactList(currentUser.getPkId());
+        Set<ContactList> contacts = new HashSet<>();
+        if (fetchedUser != null) {
+            contacts = fetchedUser.getContacts();
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        UserData editableUser = userDataService.findByPkId(contactList.getFkUserFriend().getPkId());
+
+        UserColor color = null;
+        if (contactList.getFkUserColor() != null) {
+            color = userColorService.findByName(contactList.getFkUserColor().getName());
+        }
+
+        if (editableUser != null) {
+            ContactList oldContactList = contactListService.findByOwnerAndByFriend(currentUser, editableUser);
+
+            if (contacts.contains(oldContactList)) {
+                contacts.remove(oldContactList);
+
+                userDataService.save(contactList.getFkUserFriend());
+                oldContactList.setFkUserColor(color);
+                oldContactList.setFkUserFriend(contactList.getFkUserFriend());
+                contacts.add(oldContactList);
+                currentUser.setContacts(contacts);
+                userDataService.save(currentUser);
+                status = HttpStatus.OK;
+            } else {
+                status = HttpStatus.FORBIDDEN;
+            }
+        } else {
+            status = HttpStatus.NOT_FOUND;
+        }
+
+        return new ResponseEntity(status);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResponseEntity deleteContactById(@PathVariable Long id) {
+        UserData currentUser = sessionController.getAuthorizedUser();
+        HttpStatus status;
+
+        UserData fetchedUser = userDataService.findUserDateByIdAndFetchContactList(currentUser.getPkId());
+        Set<ContactList> contacts = new HashSet<>();
+
+        if (fetchedUser != null) {
+            contacts = fetchedUser.getContacts();
+        }
+
+        UserData deletedUser = userDataService.findByPkId(id);
+        if (deletedUser != null) {
+            ContactList oldContactList = contactListService.findByOwnerAndByFriend(currentUser, deletedUser);
+            if (contacts.contains(oldContactList)) {
+                userDataService.delete(deletedUser);
+                status = HttpStatus.OK;
+            } else {
+                status = HttpStatus.FORBIDDEN;
+            }
+        } else {
+            status = HttpStatus.NOT_FOUND;
+        }
+
+        return new ResponseEntity(status);
     }
 }
