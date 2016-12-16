@@ -34,6 +34,8 @@
         <property name="packagesToScan"
                   value="by.bsu.web.entity"/>
     </bean>
+       
+    <context:property-placeholder />
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
