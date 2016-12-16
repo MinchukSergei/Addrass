@@ -30,6 +30,7 @@ public class UserController {
         if (exists != null) {
             status = HttpStatus.BAD_REQUEST;
         } else {
+            userDataService.save(userData);
             status = HttpStatus.OK;
         }
 
