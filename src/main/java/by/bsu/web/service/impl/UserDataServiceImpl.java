@@ -53,4 +53,9 @@ public class UserDataServiceImpl implements UserDataService {
     public UserData findUserDateByIdAndFetchFriendList(Long id) {
         return userDataRepository.findUserDateByIdAndFetchFriendList(id);
     }
+
+    @Override
+    public UserData findUserDateByIdAndFetchOwnEvents(Long id) {
+        return userDataRepository.findUserDateByIdAndFetchOwnEvents(id);
+    }
 }

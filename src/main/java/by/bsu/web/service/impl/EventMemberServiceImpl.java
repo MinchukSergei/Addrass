@@ -1,10 +1,12 @@
 package by.bsu.web.service.impl;
 
-import by.bsu.web.controller.util.EventCount;
-import by.bsu.web.controller.util.EventCountCriteria;
 import by.bsu.web.entity.EventMember;
+import by.bsu.web.entity.FriendList;
+import by.bsu.web.entity.UserData;
 import by.bsu.web.entity.UserEvent;
+import by.bsu.web.repository.EventMemberRepository;
 import by.bsu.web.service.EventMemberService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -17,73 +19,48 @@ import java.util.List;
 
 @Service
 public class EventMemberServiceImpl implements EventMemberService {
+    @Autowired
+    private EventMemberRepository eventMemberRepository;
+
     @PersistenceContext
     private EntityManager entityManager;
 
     @Override
-    public List<UserEvent> findCountByCriteria(List<EventCountCriteria> params, Long ownerId, Long friendId) {
+    public void delete(Long pkId) {
+        eventMemberRepository.delete(pkId);
+    }
+
+    @Override
+    public List<UserData> findFriendNotIncludeToEvent(Long ownerId, Long eventId) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Tuple> query = builder.createTupleQuery();
 
-        Root em = query.from(EventMember.class);
-        Join ue = em.join("fkEventId");
-        query.multiselect(ue);
+        Root<EventMember> em = query.from(EventMember.class);
+        query.multiselect(em.get("fkUserId"));
 
-        Predicate predicate = builder.conjunction();
+        query.where(builder.equal(em.get("fkEventId"), eventId));
+        List<Tuple> eventMembers = entityManager.createQuery(query).getResultList();
+        List<UserData> includedFriendsInEvent = new ArrayList<>();
+        for (Tuple t : eventMembers) {
+            includedFriendsInEvent.add((UserData) t.get(0));
+        }
 
-        for (EventCountCriteria param : params) {
-            predicate = builder.and(predicate,
-                    builder.equal(
-                            builder.function(param.getType(), Integer.class, ue.get("eventDateTime")),
-                            param.getValue()
-                    ));
-        }
-        //        (
-//        (em.fk_user_id = 32 OR em.fk_user_id = 2)
-//        OR (ue.fk_event_owner = 2 AND em.fk_user_id = 32)
-//        OR (ue.fk_event_owner = 32 AND em.fk_user_id = 2)
-//        )
-//        ue.fk_event_owner = 32
-//
-        if (friendId != null) {
-            predicate = builder.and(predicate,
-                    builder.or(
-                            builder.or(builder.equal(em.get("fkUserId"), ownerId),
-                                    builder.equal(em.get("fkUserId"), friendId)),
-                            builder.or(
-                                    builder.and(builder.equal(ue.get("fkEventOwner"), friendId),
-                                            builder.equal(em.get("fkUserId"), ownerId)),
-                                    builder.and(builder.equal(ue.get("fkEventOwner"), ownerId),
-                                            builder.equal(em.get("fkUserId"), friendId))
-                            )
-                    )
-            );
-        } else {
-            predicate = builder.and(predicate,
-                    builder.equal(ue.get("fkEventOwner"), ownerId)
-                    );
-        }
-//        DATE(ue.event_datetime), ue.fk_event_owner;
+        CriteriaQuery<Tuple> mainQuery = builder.createTupleQuery();
+        Root<FriendList> fl = mainQuery.from(FriendList.class);
+        mainQuery.multiselect(fl.get("fkUserFriend"));
 
-        query.where(predicate);
-        List<Tuple> tuples = entityManager.createQuery(query).getResultList();
-        List<UserEvent> eventList = new ArrayList<>();
-        for (Tuple tuple : tuples) {
-            eventList.add((UserEvent) tuple.get(0));
+        mainQuery.where(builder.and(
+                builder.equal(fl.get("fkUserMain"), ownerId),
+                builder.not(fl.get("fkUserFriend").in(includedFriendsInEvent))
+        ));
+
+        List<Tuple> notInEventMembers = entityManager.createQuery(mainQuery).getResultList();
+        List<UserData> friendList = new ArrayList<>();
+
+        for (Tuple t : notInEventMembers) {
+            friendList.add((UserData)t.get(0));
         }
-        return eventList;
+        return friendList;
     }
 
-    public List<EventCount> findEventMonthCount(Integer month, Integer year, Long userId) {
-        List<Object[]> eventMonthCountObj = null;//eventMemberRepository.findEventMonthCount(month, year, userId);
-        List<EventCount> eventMonthCount = new ArrayList<>();
-        for (Object[] o : eventMonthCountObj) {
-            boolean isOwner = false;
-            if (o[2].equals(userId)) {
-                isOwner = true;
-            }
-            eventMonthCount.add(new EventCount((Integer) o[0], (Long) o[1], isOwner));
-        }
-        return eventMonthCount;
-    }
 }

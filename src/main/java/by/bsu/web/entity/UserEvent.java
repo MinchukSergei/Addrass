@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Calendar;
+import java.util.Set;
 
 @Entity
 @Table(name = "user_event")
@@ -19,7 +20,7 @@ public class UserEvent {
 
     @ManyToOne
     @JoinColumn(name = "fk_event_type")
-    private EventType fkEventTypeEntity;
+    private EventType eventType;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -33,6 +34,18 @@ public class UserEvent {
 
     @Column(name = "event_coordinate_y")
     private Double eventCoordinateY;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fkEventId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<EventMember> members;
+
+    public Set<EventMember> getMembers() {
+        return members;
+    }
+
+    public void setMembers(Set<EventMember> members) {
+        this.members = members;
+    }
 
     public Long getPkId() {
         return pkId;
@@ -50,12 +63,12 @@ public class UserEvent {
         this.fkEventOwner = fkEventOwner;
     }
 
-    public EventType getFkEventTypeEntity() {
-        return fkEventTypeEntity;
+    public EventType getEventType() {
+        return eventType;
     }
 
-    public void setFkEventTypeEntity(EventType fkEventTypeEntity) {
-        this.fkEventTypeEntity = fkEventTypeEntity;
+    public void setEventType(EventType eventType) {
+        this.eventType = eventType;
     }
 
     public String getName() {
@@ -88,5 +101,37 @@ public class UserEvent {
 
     public void setEventCoordinateY(Double eventCoordinateY) {
         this.eventCoordinateY = eventCoordinateY;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserEvent userEvent = (UserEvent) o;
+
+        if (pkId != null ? !pkId.equals(userEvent.pkId) : userEvent.pkId != null) return false;
+        if (fkEventOwner != null ? !fkEventOwner.equals(userEvent.fkEventOwner) : userEvent.fkEventOwner != null)
+            return false;
+        if (eventType != null ? !eventType.equals(userEvent.eventType) : userEvent.eventType != null) return false;
+        if (name != null ? !name.equals(userEvent.name) : userEvent.name != null) return false;
+        if (eventDateTime != null ? !eventDateTime.equals(userEvent.eventDateTime) : userEvent.eventDateTime != null)
+            return false;
+        if (eventCoordinateX != null ? !eventCoordinateX.equals(userEvent.eventCoordinateX) : userEvent.eventCoordinateX != null)
+            return false;
+        return eventCoordinateY != null ? eventCoordinateY.equals(userEvent.eventCoordinateY) : userEvent.eventCoordinateY == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = pkId != null ? pkId.hashCode() : 0;
+        result = 31 * result + (fkEventOwner != null ? fkEventOwner.hashCode() : 0);
+        result = 31 * result + (eventType != null ? eventType.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (eventDateTime != null ? eventDateTime.hashCode() : 0);
+        result = 31 * result + (eventCoordinateX != null ? eventCoordinateX.hashCode() : 0);
+        result = 31 * result + (eventCoordinateY != null ? eventCoordinateY.hashCode() : 0);
+        return result;
     }
 }

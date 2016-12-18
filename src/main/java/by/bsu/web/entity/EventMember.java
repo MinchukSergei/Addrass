@@ -17,7 +17,7 @@ public class EventMember {
     @JoinColumn(name = "fk_event_id")
     private UserEvent fkEventId;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "fk_user_id", nullable = false)
     private UserData fkUserId;
 

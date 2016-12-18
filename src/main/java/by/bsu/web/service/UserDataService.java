@@ -2,6 +2,7 @@ package by.bsu.web.service;
 
 import by.bsu.web.entity.FriendList;
 import by.bsu.web.entity.UserData;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Set;
@@ -15,4 +16,5 @@ public interface UserDataService {
 
     UserData findUserDateByIdAndFetchContactList(Long id);
     UserData findUserDateByIdAndFetchFriendList(Long id);
+    UserData findUserDateByIdAndFetchOwnEvents(Long id);
 }

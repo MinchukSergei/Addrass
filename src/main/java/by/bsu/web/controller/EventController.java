@@ -1,17 +1,20 @@
 package by.bsu.web.controller;
 
+import by.bsu.web.controller.util.EventCount;
+import by.bsu.web.controller.util.EventCountCriteria;
 import by.bsu.web.entity.EventType;
 import by.bsu.web.entity.UserData;
 import by.bsu.web.entity.UserEvent;
 import by.bsu.web.service.EventTypeService;
 import by.bsu.web.service.UserEventService;
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/event")
@@ -30,11 +33,11 @@ public class EventController {
     public ResponseEntity<String> addEvent(@RequestBody UserEvent userEvent) {
         UserData current = sessionController.getAuthorizedUser();
 
-        EventType eventType = eventTypeService.findByName(userEvent.getFkEventTypeEntity().getName());
+        EventType eventType = eventTypeService.findByName(userEvent.getEventType().getName());
         if (eventType == null) {
             eventType = eventTypeService.findByName(EventType.DEFAULT_TYPE);
         }
-        userEvent.setFkEventTypeEntity(eventType);
+        userEvent.setEventType(eventType);
         userEvent.setFkEventOwner(current.getPkId());
 
         userEventService.save(userEvent);
@@ -48,9 +51,9 @@ public class EventController {
         HttpStatus result;
 
         if (exists != null) {
-            EventType eventType = eventTypeService.findByName(userEvent.getFkEventTypeEntity().getName());
+            EventType eventType = eventTypeService.findByName(userEvent.getEventType().getName());
             if (eventType != null) {
-                exists.setFkEventTypeEntity(eventType);
+                exists.setEventType(eventType);
             }
             exists.setName(userEvent.getName());
             exists.setEventCoordinateX(userEvent.getEventCoordinateX());
@@ -66,11 +69,58 @@ public class EventController {
         return new ResponseEntity<>(result);
     }
 
-    @RequestMapping(value = "/day", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public List<UserEvent> getEvent(@RequestParam("date") String date) {
+    public List<UserEvent> getEventsByDate(@RequestParam("date") String date,
+                                           @RequestParam(value = "id", required = false) Long friendId) {
         UserData current = sessionController.getAuthorizedUser();
-        return userEventService.findByFkOwnerAndDate(current.getPkId(), date);
+
+        String[] filterObj = date.split("-");
+        String[] paramTypes = {"year", "month", "day"};
+        List<EventCountCriteria> criterias = new ArrayList<>();
+
+        for (int i = 0; i < filterObj.length; i++) {
+            criterias.add(new EventCountCriteria(paramTypes[i], Integer.valueOf(filterObj[i])));
+        }
+
+        return userEventService.findEventsByDate(criterias, current.getPkId(), friendId);
+    }
+
+    @RequestMapping(value = "/count", method = RequestMethod.GET)
+    @ResponseBody
+    public List<EventCount> getEventsCountByDate(@RequestParam("date") String date,
+                                                 @RequestParam(value = "id", required = false) Long friendId) {
+        UserData current = sessionController.getAuthorizedUser();
+
+        String[] filterObj = date.split("-");
+        String[] paramTypes = {"year", "month", "day"};
+        List<EventCountCriteria> criterias = new ArrayList<>();
+
+        for (int i = 0; i < filterObj.length; i++) {
+            criterias.add(new EventCountCriteria(paramTypes[i], Integer.valueOf(filterObj[i])));
+        }
+        List<UserEvent> eventList = userEventService.findEventsByDate(criterias, current.getPkId(), friendId);
+        List<EventCount> eventCountList = new ArrayList<>();
+        Map<Integer, Integer> ownEventCount = new HashMap<>();
+        Map<Integer, Integer> memberEventCount = new HashMap<>();
+
+        for (UserEvent e : eventList) {
+            int day = e.getEventDateTime().get(Calendar.DAY_OF_MONTH);
+            if (e.getFkEventOwner().equals(current.getPkId())) {
+                ownEventCount.put(day, ownEventCount.get(day) == null ? 1 : ownEventCount.get(day) + 1);
+            } else {
+                memberEventCount.put(day, memberEventCount.get(day) == null ? 1 : memberEventCount.get(day) + 1);
+            }
+        }
+        for (Map.Entry<Integer, Integer> p : ownEventCount.entrySet()) {
+            eventCountList.add(new EventCount(p.getKey(), p.getValue(), true));
+        }
+
+        for (Map.Entry<Integer, Integer> p : memberEventCount.entrySet()) {
+            eventCountList.add(new EventCount(p.getKey(), p.getValue(), false));
+        }
+
+        return eventCountList;
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
@@ -86,20 +136,4 @@ public class EventController {
         }
         return new ResponseEntity<>(result);
     }
-
-//    @RequestMapping(value = "/get/month", method = RequestMethod.GET)
-//    @ResponseBody
-//    public List<EventMonthCount> getMonthEventsCount(@RequestParam("date") String date) {
-//        Calendar calendar = Calendar.getInstance();
-//        DateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-//        try {
-//            calendar.setTime(sdf.parse(date));
-//        } catch (ParseException ignored) {}
-//
-//        Long owner = 2L;
-//        Integer month = calendar.get(Calendar.MONTH) + 1;
-//        Integer year = calendar.get(Calendar.YEAR);
-//        return userEventService.findMonthCountEvent(month, year, owner);
-//    }
-
 }

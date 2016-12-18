@@ -30,6 +30,7 @@ public class UserController {
         if (exists != null) {
             status = HttpStatus.BAD_REQUEST;
         } else {
+            userData.setUserPassword(sha256.hashString(userData.getUserPassword()));
             userDataService.save(userData);
             status = HttpStatus.OK;
         }

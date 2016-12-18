@@ -13,4 +13,7 @@ public interface UserDataRepository extends CrudRepository<UserData, Long> {
 
     @Query("SELECT ud FROM UserData ud JOIN FETCH ud.friends WHERE ud.pkId = (:id)")
     UserData findUserDateByIdAndFetchFriendList(@Param(value = "id") Long id);
+
+    @Query("SELECT ud FROM UserData ud JOIN FETCH ud.ownEvents WHERE ud.pkId = (:id)")
+    UserData findUserDateByIdAndFetchOwnEvents(@Param(value = "id") Long id);
 }

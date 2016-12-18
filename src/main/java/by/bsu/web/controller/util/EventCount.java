@@ -3,10 +3,10 @@ package by.bsu.web.controller.util;
 
 public class EventCount {
     private Integer dayOfMonth;
-    private Long eventCount;
+    private Integer eventCount;
     private Boolean isOwner;
 
-    public EventCount(Integer dayOfMonth, Long eventCount, Boolean isOwner) {
+    public EventCount(Integer dayOfMonth, Integer eventCount, Boolean isOwner) {
         this.dayOfMonth = dayOfMonth;
         this.eventCount = eventCount;
         this.isOwner = isOwner;
@@ -20,11 +20,11 @@ public class EventCount {
         this.dayOfMonth = dayOfMonth;
     }
 
-    public Long getEventCount() {
+    public Integer getEventCount() {
         return eventCount;
     }
 
-    public void setEventCount(Long eventCount) {
+    public void setEventCount(Integer eventCount) {
         this.eventCount = eventCount;
     }
 

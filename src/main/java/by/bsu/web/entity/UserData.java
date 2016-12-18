@@ -50,6 +50,10 @@ public class UserData {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "fkUserMain", cascade = CascadeType.ALL)
     private Set<FriendList> friends;
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fkEventOwner")
+    private Set<UserEvent> ownEvents;
+
     public UserData() {
     }
 
@@ -149,6 +153,14 @@ public class UserData {
 
     public void setFriends(Set<FriendList> friends) {
         this.friends = friends;
+    }
+
+    public Set<UserEvent> getOwnEvents() {
+        return ownEvents;
+    }
+
+    public void setOwnEvents(Set<UserEvent> ownEvents) {
+        this.ownEvents = ownEvents;
     }
 
     @Override
