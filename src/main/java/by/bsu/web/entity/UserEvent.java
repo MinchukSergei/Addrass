@@ -14,9 +14,9 @@ public class UserEvent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pkId;
 
-    @Column(name = "fk_event_owner", nullable = false)
-    @JsonIgnore
-    private Long fkEventOwner;
+    @ManyToOne
+    @JoinColumn(name = "fk_event_owner", nullable = false)
+    private UserData userOwner;
 
     @ManyToOne
     @JoinColumn(name = "fk_event_type")
@@ -55,12 +55,12 @@ public class UserEvent {
         this.pkId = pkId;
     }
 
-    public Long getFkEventOwner() {
-        return fkEventOwner;
+    public UserData getUserOwner() {
+        return userOwner;
     }
 
-    public void setFkEventOwner(Long fkEventOwner) {
-        this.fkEventOwner = fkEventOwner;
+    public void setUserOwner(UserData userOwner) {
+        this.userOwner = userOwner;
     }
 
     public EventType getEventType() {
@@ -111,8 +111,7 @@ public class UserEvent {
         UserEvent userEvent = (UserEvent) o;
 
         if (pkId != null ? !pkId.equals(userEvent.pkId) : userEvent.pkId != null) return false;
-        if (fkEventOwner != null ? !fkEventOwner.equals(userEvent.fkEventOwner) : userEvent.fkEventOwner != null)
-            return false;
+        if (userOwner != null ? !userOwner.equals(userEvent.userOwner) : userEvent.userOwner != null) return false;
         if (eventType != null ? !eventType.equals(userEvent.eventType) : userEvent.eventType != null) return false;
         if (name != null ? !name.equals(userEvent.name) : userEvent.name != null) return false;
         if (eventDateTime != null ? !eventDateTime.equals(userEvent.eventDateTime) : userEvent.eventDateTime != null)
@@ -126,7 +125,7 @@ public class UserEvent {
     @Override
     public int hashCode() {
         int result = pkId != null ? pkId.hashCode() : 0;
-        result = 31 * result + (fkEventOwner != null ? fkEventOwner.hashCode() : 0);
+        result = 31 * result + (userOwner != null ? userOwner.hashCode() : 0);
         result = 31 * result + (eventType != null ? eventType.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (eventDateTime != null ? eventDateTime.hashCode() : 0);

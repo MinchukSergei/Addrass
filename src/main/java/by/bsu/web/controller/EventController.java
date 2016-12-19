@@ -1,11 +1,14 @@
 package by.bsu.web.controller;
 
+import by.bsu.web.controller.util.DateValidator;
 import by.bsu.web.controller.util.EventCount;
 import by.bsu.web.controller.util.EventCountCriteria;
 import by.bsu.web.entity.EventType;
+import by.bsu.web.entity.FriendList;
 import by.bsu.web.entity.UserData;
 import by.bsu.web.entity.UserEvent;
 import by.bsu.web.service.EventTypeService;
+import by.bsu.web.service.UserDataService;
 import by.bsu.web.service.UserEventService;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,8 @@ import java.util.*;
 @Controller
 @RequestMapping("/event")
 public class EventController {
+    private static final String DATE_FORMAT = "%d-%m-%Y";
+
     @Autowired
     private UserEventService userEventService;
 
@@ -27,6 +32,12 @@ public class EventController {
 
     @Autowired
     private EventTypeService eventTypeService;
+
+    @Autowired
+    private DateValidator dateValidator;
+
+    @Autowired
+    private UserDataService userDataService;
 
 
     @RequestMapping(method = RequestMethod.POST)
@@ -38,7 +49,7 @@ public class EventController {
             eventType = eventTypeService.findByName(EventType.DEFAULT_TYPE);
         }
         userEvent.setEventType(eventType);
-        userEvent.setFkEventOwner(current.getPkId());
+        userEvent.setUserOwner(current);
 
         userEventService.save(userEvent);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -47,7 +58,7 @@ public class EventController {
     @RequestMapping(method = RequestMethod.PUT)
     public ResponseEntity<String> editEvent(@RequestBody UserEvent userEvent) {
         UserData current = sessionController.getAuthorizedUser();
-        UserEvent exists = userEventService.findByEventOwnerAndPkId(current.getPkId(), userEvent.getPkId());
+        UserEvent exists = userEventService.findByUserOwnerAndPkId(current, userEvent.getPkId());
         HttpStatus result;
 
         if (exists != null) {
@@ -69,64 +80,93 @@ public class EventController {
         return new ResponseEntity<>(result);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = "/{from}/{to}", method = RequestMethod.GET)
     @ResponseBody
-    public List<UserEvent> getEventsByDate(@RequestParam("date") String date,
-                                           @RequestParam(value = "id", required = false) Long friendId) {
-        UserData current = sessionController.getAuthorizedUser();
+    public ResponseEntity<Set<UserEvent>> getEventsBetweenDates(@PathVariable("from") String from,
+                                                                @PathVariable("to") String to) {
+        UserData currentUser = sessionController.getAuthorizedUser();
+        HttpStatus status;
+        Set<UserEvent> sharedEvents = new HashSet<>();
 
-        String[] filterObj = date.split("-");
-        String[] paramTypes = {"year", "month", "day"};
-        List<EventCountCriteria> criterias = new ArrayList<>();
-
-        for (int i = 0; i < filterObj.length; i++) {
-            criterias.add(new EventCountCriteria(paramTypes[i], Integer.valueOf(filterObj[i])));
+        if (!dateValidator.dateIsValid(from) || !dateValidator.dateIsValid(to)) {
+            status = HttpStatus.BAD_REQUEST;
+        } else {
+            sharedEvents = userEventService.findSharedEventsBetweenDatesByUserId(from, to, DATE_FORMAT, currentUser);
+            status = HttpStatus.OK;
         }
-
-        return userEventService.findEventsByDate(criterias, current.getPkId(), friendId);
+        return new ResponseEntity<>(sharedEvents, status);
     }
 
-    @RequestMapping(value = "/count", method = RequestMethod.GET)
+    @RequestMapping(value = "/count/{from}/{to}", method = RequestMethod.GET)
     @ResponseBody
-    public List<EventCount> getEventsCountByDate(@RequestParam("date") String date,
-                                                 @RequestParam(value = "id", required = false) Long friendId) {
-        UserData current = sessionController.getAuthorizedUser();
+    public ResponseEntity<List<EventCount>> getEventCountBetweenDates(@PathVariable("from") String from,
+                                                                      @PathVariable("to") String to) {
+        UserData currentUser = sessionController.getAuthorizedUser();
+        HttpStatus status;
+        List<EventCount> countSharedEvents = new ArrayList<>();
 
-        String[] filterObj = date.split("-");
-        String[] paramTypes = {"year", "month", "day"};
-        List<EventCountCriteria> criterias = new ArrayList<>();
-
-        for (int i = 0; i < filterObj.length; i++) {
-            criterias.add(new EventCountCriteria(paramTypes[i], Integer.valueOf(filterObj[i])));
+        if (!dateValidator.dateIsValid(from) || !dateValidator.dateIsValid(to)) {
+            status = HttpStatus.BAD_REQUEST;
+        } else {
+            countSharedEvents = userEventService.findCountSharedEventsBetweenDatesByUserId(from, to, DATE_FORMAT, currentUser);
+            status = HttpStatus.OK;
         }
-        List<UserEvent> eventList = userEventService.findEventsByDate(criterias, current.getPkId(), friendId);
-        List<EventCount> eventCountList = new ArrayList<>();
-        Map<Integer, Integer> ownEventCount = new HashMap<>();
-        Map<Integer, Integer> memberEventCount = new HashMap<>();
+        return new ResponseEntity<>(countSharedEvents, status);
+    }
 
-        for (UserEvent e : eventList) {
-            int day = e.getEventDateTime().get(Calendar.DAY_OF_MONTH);
-            if (e.getFkEventOwner().equals(current.getPkId())) {
-                ownEventCount.put(day, ownEventCount.get(day) == null ? 1 : ownEventCount.get(day) + 1);
+    @RequestMapping(value = "/{login}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Set<UserEvent>> getEventsSharedWithUser(@PathVariable("login") String login) {
+        UserData currentUser = sessionController.getAuthorizedUser();
+        HttpStatus status;
+        Set<UserEvent> events = new HashSet<>();
+
+        UserData friend = userDataService.findByUserLogin(login);
+        if (friend == null) {
+            status = HttpStatus.NOT_FOUND;
+        } else {
+            UserData fetchedUser = userDataService.findUserDateByIdAndFetchFriendList(currentUser.getPkId());
+            Set<FriendList> friends = new HashSet<>();
+            if (fetchedUser != null) {
+                friends = fetchedUser.getFriends();
+            }
+
+            boolean contains = false;
+            for (FriendList f : friends) {
+                if (f.getFkUserFriend().getPkId().equals(friend.getPkId())) {
+                    contains = true;
+                    break;
+                }
+            }
+
+            if (contains) {
+                events = userEventService.findSharedEventsWithFriend(currentUser, friend);
+                status = HttpStatus.OK;
             } else {
-                memberEventCount.put(day, memberEventCount.get(day) == null ? 1 : memberEventCount.get(day) + 1);
+                status = HttpStatus.FORBIDDEN;
             }
         }
-        for (Map.Entry<Integer, Integer> p : ownEventCount.entrySet()) {
-            eventCountList.add(new EventCount(p.getKey(), p.getValue(), true));
-        }
-
-        for (Map.Entry<Integer, Integer> p : memberEventCount.entrySet()) {
-            eventCountList.add(new EventCount(p.getKey(), p.getValue(), false));
-        }
-
-        return eventCountList;
+        return new ResponseEntity<>(events, status);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteEvent(@RequestParam Long id) {
+    @RequestMapping(method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Set<UserEvent>> getOwnEvents() {
+        UserData currentUser = sessionController.getAuthorizedUser();
+
+        UserData fetchedWithOwnEventsUser = userDataService.findUserDateByIdAndFetchOwnEvents(currentUser.getPkId());
+        Set<UserEvent> ownEvents = new HashSet<>();
+        if (fetchedWithOwnEventsUser != null) {
+            ownEvents = fetchedWithOwnEventsUser.getOwnEvents();
+        }
+
+        return new ResponseEntity<>(ownEvents, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteEvent(@PathVariable Long id) {
         UserData current = sessionController.getAuthorizedUser();
-        UserEvent userEvent = userEventService.findByEventOwnerAndPkId(current.getPkId(), id);
+        UserEvent userEvent = userEventService.findByUserOwnerAndPkId(current, id);
         HttpStatus result;
         if (userEvent != null) {
             userEventService.delete(id);

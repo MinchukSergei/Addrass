@@ -2,29 +2,23 @@ package by.bsu.web.controller.util;
 
 
 public class EventCount {
-    private Integer dayOfMonth;
-    private Integer eventCount;
+    private String date;
+    private Long eventCount;
     private Boolean isOwner;
 
-    public EventCount(Integer dayOfMonth, Integer eventCount, Boolean isOwner) {
-        this.dayOfMonth = dayOfMonth;
-        this.eventCount = eventCount;
-        this.isOwner = isOwner;
+    public String getDate() {
+        return date;
     }
 
-    public Integer getDayOfMonth() {
-        return dayOfMonth;
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public void setDayOfMonth(Integer dayOfMonth) {
-        this.dayOfMonth = dayOfMonth;
-    }
-
-    public Integer getEventCount() {
+    public Long getEventCount() {
         return eventCount;
     }
 
-    public void setEventCount(Integer eventCount) {
+    public void setEventCount(Long eventCount) {
         this.eventCount = eventCount;
     }
 

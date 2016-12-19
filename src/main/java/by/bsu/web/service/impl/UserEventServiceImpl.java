@@ -1,11 +1,13 @@
 package by.bsu.web.service.impl;
 
+import by.bsu.web.controller.util.EventCount;
 import by.bsu.web.controller.util.EventCountCriteria;
 import by.bsu.web.entity.EventMember;
 import by.bsu.web.entity.UserData;
 import by.bsu.web.entity.UserEvent;
 import by.bsu.web.repository.UserEventRepository;
 import by.bsu.web.service.UserEventService;
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class UserEventServiceImpl implements UserEventService {
@@ -32,8 +33,8 @@ public class UserEventServiceImpl implements UserEventService {
     }
 
     @Override
-    public UserEvent findByEventOwnerAndPkId(Long owner, Long pkId) {
-        return userEventRepository.findByFkEventOwnerAndPkId(owner, pkId);
+    public UserEvent findByUserOwnerAndPkId(UserData owner, Long pkId) {
+        return userEventRepository.findByUserOwnerAndPkId(owner, pkId);
     }
 
     @Override
@@ -42,62 +43,63 @@ public class UserEventServiceImpl implements UserEventService {
     }
 
     @Override
+    public Set<UserEvent> findSharedEventsBetweenDatesByUserId(String dateFrom, String dateTo, String format, UserData user) {
+        return userEventRepository.findSharedEventsBetweenDatesByUserId(dateFrom, dateTo, format, user);
+    }
+
+    @Override
+    public List<EventCount> findCountSharedEventsBetweenDatesByUserId(String dateFrom, String dateTo, String format, UserData user) {
+        Set<Object[]> countSharedEvents = userEventRepository.findCountSharedEventsBetweenDatesByUserId(dateFrom, dateTo, format, user);
+        List<EventCount> eventCounts = new ArrayList<>();
+
+        Map<String, Long> eventOwnCountMap = new HashMap<>();
+        Map<String, Long> eventSharedCountMap = new HashMap<>();
+
+        for (Object[] oo : countSharedEvents) {
+            String date = (String) oo[0];
+            Long count = (Long) oo[1];
+            UserData owner = (UserData) oo[2];
+
+            if (owner.getPkId().equals(user.getPkId())) {
+                eventOwnCountMap.put(date,
+                        eventOwnCountMap.get(date) == null ? 1 :
+                                eventOwnCountMap.get(date) + count);
+            } else {
+                eventSharedCountMap.put(date,
+                        eventSharedCountMap.get(date) == null ? 1 :
+                                eventSharedCountMap.get(date) + count);
+            }
+        }
+
+        for (Map.Entry<String, Long> entry : eventOwnCountMap.entrySet()) {
+            EventCount eventCount = new EventCount();
+            eventCount.setDate(entry.getKey());
+            eventCount.setEventCount(entry.getValue());
+            eventCount.setOwner(true);
+            eventCounts.add(eventCount);
+        }
+
+        for (Map.Entry<String, Long> entry : eventSharedCountMap.entrySet()) {
+            EventCount eventCount = new EventCount();
+            eventCount.setDate(entry.getKey());
+            eventCount.setEventCount(entry.getValue());
+            eventCount.setOwner(false);
+            eventCounts.add(eventCount);
+        }
+        return eventCounts;
+    }
+
+    @Override
+    public Set<UserEvent> findSharedEventsWithFriend(UserData owner, UserData friend) {
+        return userEventRepository.findSharedEventsWithFriend(owner, friend);
+    }
+
+    @Override
     public UserEvent save(UserEvent userEvent) {
         return userEventRepository.save(userEvent);
     }
 
-    @PersistenceContext
-    private EntityManager entityManager;
 
-    @Override
-    public List<UserEvent> findEventsByDate(List<EventCountCriteria> params, Long ownerId, Long friendId) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Tuple> query = builder.createTupleQuery();
 
-        Root<UserEvent> ue = query.from(UserEvent.class);
-        Join<UserEvent, EventMember> em = ue.join("members", JoinType.LEFT);
-        query.multiselect(ue).distinct(true);
-
-        Predicate predicate = builder.conjunction();
-
-        for (EventCountCriteria param : params) {
-            predicate = builder.and(predicate,
-                    builder.equal(
-                            builder.function(param.getType(), Integer.class, ue.get("eventDateTime")),
-                            param.getValue()
-                    ));
-        }
-
-        if (friendId != null) {
-            predicate = builder.and(predicate,
-                    builder.or(
-                            builder.or(builder.equal(em.get("fkUserId"), ownerId),
-                                    builder.equal(em.get("fkUserId"), friendId)),
-                            builder.or(
-                                    builder.and(builder.equal(ue.get("fkEventOwner"), friendId),
-                                            builder.equal(em.get("fkUserId"), ownerId)),
-                                    builder.and(builder.equal(ue.get("fkEventOwner"), ownerId),
-                                            builder.equal(em.get("fkUserId"), friendId))
-                            )
-                    )
-            );
-        } else {
-//            em.fk_user_id = 32 OR ue.fk_event_owner = 32
-            predicate = builder.and(predicate,
-                    builder.or(
-                            builder.equal(ue.get("fkEventOwner"), ownerId),
-                            builder.equal(em.get("fkUserId"), ownerId)
-                    )
-            );
-        }
-
-        query.where(predicate);
-        List<Tuple> tuples = entityManager.createQuery(query).getResultList();
-        List<UserEvent> eventList = new ArrayList<>();
-        for (Tuple tuple : tuples) {
-            eventList.add((UserEvent) tuple.get(0));
-        }
-        return eventList;
-    }
 }
 

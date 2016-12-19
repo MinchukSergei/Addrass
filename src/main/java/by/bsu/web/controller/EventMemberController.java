@@ -46,7 +46,7 @@ public class EventMemberController {
 
         UserData fetchedUser = userDataService.findUserDateByIdAndFetchOwnEvents(currentUser.getPkId());
         Set<UserEvent> ownEvents = new HashSet<>();
-        if (fetchedUser.getOwnEvents() != null) {
+        if (fetchedUser != null) {
             ownEvents = fetchedUser.getOwnEvents();
         }
 
@@ -55,7 +55,7 @@ public class EventMemberController {
         if (ownEvents.contains(userEvent)) {
             UserEvent fetchedEvent = userEventService.findUserEventByIdAndFetchMembers(userEvent.getPkId());
             Set<EventMember> eventMembers = new HashSet<>();
-            if (fetchedEvent.getMembers() != null) {
+            if (fetchedEvent != null) {
                 eventMembers = fetchedEvent.getMembers();
             }
             for (EventMember e : eventMembers) {
@@ -76,7 +76,7 @@ public class EventMemberController {
 
         UserData fetchedUser = userDataService.findUserDateByIdAndFetchOwnEvents(currentUser.getPkId());
         Set<UserEvent> ownEvents = new HashSet<>();
-        if (fetchedUser.getOwnEvents() != null) {
+        if (fetchedUser != null) {
             ownEvents = fetchedUser.getOwnEvents();
         }
 
@@ -101,7 +101,7 @@ public class EventMemberController {
 
         UserData fetchedUser = userDataService.findUserDateByIdAndFetchOwnEvents(currentUser.getPkId());
         Set<UserEvent> ownEvents = new HashSet<>();
-        if (fetchedUser.getOwnEvents() != null) {
+        if (fetchedUser != null) {
             ownEvents = fetchedUser.getOwnEvents();
         }
 
@@ -113,7 +113,7 @@ public class EventMemberController {
         } else {
             UserEvent fetchedEvent = userEventService.findUserEventByIdAndFetchMembers(userEvent.getPkId());
             Set<EventMember> members = new HashSet<>();
-            if (fetchedEvent.getMembers() != null) {
+            if (fetchedEvent != null) {
                 members = fetchedEvent.getMembers();
             }
 
@@ -148,7 +148,7 @@ public class EventMemberController {
 
         UserData fetchedUser = userDataService.findUserDateByIdAndFetchOwnEvents(currentUser.getPkId());
         Set<UserEvent> ownEvents = new HashSet<>();
-        if (fetchedUser.getOwnEvents() != null) {
+        if (fetchedUser != null) {
             ownEvents = fetchedUser.getOwnEvents();
         }
 
@@ -159,7 +159,7 @@ public class EventMemberController {
         } else {
             UserEvent fetchedEvent = userEventService.findUserEventByIdAndFetchMembers(userEvent.getPkId());
             Set<EventMember> members = new HashSet<>();
-            if (fetchedEvent.getMembers() != null) {
+            if (fetchedEvent != null) {
                 members = fetchedEvent.getMembers();
             }
 

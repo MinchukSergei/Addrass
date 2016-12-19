@@ -51,7 +51,7 @@ public class UserData {
     private Set<FriendList> friends;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fkEventOwner")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userOwner")
     private Set<UserEvent> ownEvents;
 
     public UserData() {
