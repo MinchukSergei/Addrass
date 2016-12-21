@@ -60,7 +60,7 @@ public class UserController {
         return new ResponseEntity(status);
     }
 
-    @RequestMapping(value = "/{login}", method = RequestMethod.GET)
+    @RequestMapping(value = "/search/{login}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<UserData> getUserByLogin(@PathVariable(value = "login") String login) {
         UserData userData = userDataService.findByUserLogin(login);
