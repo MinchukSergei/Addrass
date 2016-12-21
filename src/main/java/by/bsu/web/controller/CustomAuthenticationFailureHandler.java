@@ -14,7 +14,5 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
     @Override
     public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
         httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        HttpSession session = httpServletRequest.getSession(false);
-        session.setAttribute("error", "Incorrect credentials.");
     }
 }
