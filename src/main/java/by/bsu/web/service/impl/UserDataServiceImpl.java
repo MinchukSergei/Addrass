@@ -1,19 +1,13 @@
 package by.bsu.web.service.impl;
 
-import by.bsu.web.entity.FriendList;
 import by.bsu.web.entity.UserData;
 import by.bsu.web.repository.UserDataRepository;
 import by.bsu.web.service.UserDataService;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class UserDataServiceImpl implements UserDataService {

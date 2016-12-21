@@ -1,7 +1,5 @@
 package by.bsu.web.controller.util;
 
-import javax.persistence.criteria.CriteriaBuilder;
-
 /**
  * Created by USER on 03.12.2016.
  */

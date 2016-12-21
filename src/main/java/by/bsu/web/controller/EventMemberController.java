@@ -1,14 +1,12 @@
 package by.bsu.web.controller;
 
 import by.bsu.web.entity.EventMember;
-import by.bsu.web.entity.FriendList;
 import by.bsu.web.entity.UserData;
 import by.bsu.web.entity.UserEvent;
 import by.bsu.web.service.EventMemberService;
 import by.bsu.web.service.UserDataService;
 import by.bsu.web.service.UserEventService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.Lifecycle;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

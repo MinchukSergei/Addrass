@@ -1,20 +1,13 @@
 package by.bsu.web.service.impl;
 
 import by.bsu.web.controller.util.EventCount;
-import by.bsu.web.controller.util.EventCountCriteria;
-import by.bsu.web.entity.EventMember;
 import by.bsu.web.entity.UserData;
 import by.bsu.web.entity.UserEvent;
 import by.bsu.web.repository.UserEventRepository;
 import by.bsu.web.service.UserEventService;
-import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Tuple;
-import javax.persistence.criteria.*;
 import java.util.*;
 
 @Service

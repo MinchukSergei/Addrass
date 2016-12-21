@@ -3,7 +3,6 @@ package by.bsu.web.service.impl;
 import by.bsu.web.entity.EventMember;
 import by.bsu.web.entity.FriendList;
 import by.bsu.web.entity.UserData;
-import by.bsu.web.entity.UserEvent;
 import by.bsu.web.repository.EventMemberRepository;
 import by.bsu.web.service.EventMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,9 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 

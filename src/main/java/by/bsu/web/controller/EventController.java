@@ -2,7 +2,6 @@ package by.bsu.web.controller;
 
 import by.bsu.web.controller.util.DateValidator;
 import by.bsu.web.controller.util.EventCount;
-import by.bsu.web.controller.util.EventCountCriteria;
 import by.bsu.web.entity.EventType;
 import by.bsu.web.entity.FriendList;
 import by.bsu.web.entity.UserData;
@@ -10,14 +9,16 @@ import by.bsu.web.entity.UserEvent;
 import by.bsu.web.service.EventTypeService;
 import by.bsu.web.service.UserDataService;
 import by.bsu.web.service.UserEventService;
-import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/event")

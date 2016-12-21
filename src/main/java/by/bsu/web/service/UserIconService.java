@@ -1,6 +1,5 @@
 package by.bsu.web.service;
 
-import by.bsu.web.entity.UserData;
 import by.bsu.web.entity.UserIcon;
 
 /**

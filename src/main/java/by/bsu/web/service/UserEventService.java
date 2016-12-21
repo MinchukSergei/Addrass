@@ -1,10 +1,8 @@
 package by.bsu.web.service;
 
 import by.bsu.web.controller.util.EventCount;
-import by.bsu.web.controller.util.EventCountCriteria;
 import by.bsu.web.entity.UserData;
 import by.bsu.web.entity.UserEvent;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Set;
