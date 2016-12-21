@@ -1,6 +1,7 @@
 package by.bsu.web.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,7 +37,7 @@ public class UserColor {
         return color;
     }
 
-    @JsonIgnore
+    @JsonProperty
     public void setColor(Integer color) {
         this.color = color;
     }

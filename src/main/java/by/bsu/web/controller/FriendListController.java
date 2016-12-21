@@ -1,6 +1,5 @@
 package by.bsu.web.controller;
 
-import by.bsu.web.controller.util.ErrorEntity;
 import by.bsu.web.entity.FriendList;
 import by.bsu.web.entity.UserColor;
 import by.bsu.web.entity.UserData;
@@ -9,15 +8,16 @@ import by.bsu.web.service.FriendListService;
 import by.bsu.web.service.UserColorService;
 import by.bsu.web.service.UserDataService;
 import by.bsu.web.service.UserGroupService;
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -119,6 +119,19 @@ public class FriendListController {
         }
 
         return new ResponseEntity(status);
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Set<FriendList>> getFriends() {
+        UserData currentUser = sessionController.getAuthorizedUser();
+        Set<FriendList> friends = new HashSet<>();
+
+        UserData fetchedWithFriends = userDataService.findUserDateByIdAndFetchFriendList(currentUser.getPkId());
+        if (fetchedWithFriends != null) {
+            friends = fetchedWithFriends.getFriends();
+        }
+        return new ResponseEntity<>(friends, HttpStatus.OK);
     }
 
 }

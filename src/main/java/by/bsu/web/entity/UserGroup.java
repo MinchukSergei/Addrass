@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "user_group")
 public class UserGroup {
-    public static final String DEFAULT_GROUP = "other";
+    public static final String DEFAULT_GROUP = "Other";
 
     @Id
     @Column(name = "pk_id", nullable = false)

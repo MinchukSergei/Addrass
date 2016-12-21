@@ -1,0 +1,26 @@
+<div class="menu-box block"> <!-- MENU BOX (LEFT-CONTAINER) -->
+    <div class="search-box">
+        <div class="search-icon"></div>
+        <input class="search-input">
+    </div>
+    <ul class="menu-box-menu">
+        <li ng-repeat="user in $ctrl.users">
+            <div class="menu-box-tab">
+                <span class="circle" style="background-color: {{user.fkUserColor.color | hexify}}"></span>
+                <div class="profile-picture small-profile-picture">
+                    <img width="40px" ng-src="{{$ctrl.photoPrefix + user.fkUserFriend.fkUserPhoto.iconName}}">
+                </div>
+                <div class="profile-info">
+                    <div class="profile-name">
+                        {{user.fkUserFriend.userName}}
+                    </div>
+                    <div class="group-name">
+                        {{user.fkUserFriend.userPhoneField}}
+                    </div>
+                </div>
+                <div class="arrow" ng-click="$ctrl.setSelectedId(user.fkUserFriend.pkId)"></div>
+
+            </div>
+        </li>
+    </ul>
+</div>

@@ -21,7 +21,7 @@ public class UserController {
     @Autowired
     private SessionController sessionController;
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity registerUser(@RequestBody UserData userData) {
         UserData exists = userDataService.findByUserLogin(userData.getUserLogin());
@@ -38,7 +38,7 @@ public class UserController {
         return new ResponseEntity(status);
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @RequestMapping(value = "", method = RequestMethod.PUT)
     @ResponseBody
     public ResponseEntity editUser(@RequestBody UserData userData) {
         UserData currentUser = sessionController.getAuthorizedUser();
@@ -74,8 +74,22 @@ public class UserController {
         return new ResponseEntity<>(userData, status);
     }
 
+    @RequestMapping(value = "/{pkId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<UserData> getUserByPkId(@PathVariable(value = "pkId") Long pkId) {
+        UserData userData = userDataService.findByPkId(pkId);
+        HttpStatus status;
 
-    @RequestMapping(method = RequestMethod.DELETE)
+        if (userData == null) {
+            status = HttpStatus.BAD_REQUEST;
+        } else {
+            status = HttpStatus.OK;
+        }
+        return new ResponseEntity<>(userData, status);
+    }
+
+
+    @RequestMapping(value = "", method = RequestMethod.DELETE)
     @ResponseBody
     public ResponseEntity deleteUser() {
         UserData currentUser = sessionController.getAuthorizedUser();

@@ -1,0 +1,149 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.menu-box-menu::-webkit-scrollbar {
+    width: 4px;
+}
+
+.menu-box-menu::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+.menu-box-menu::-webkit-scrollbar-thumb {
+    background-color: #E6C500;
+    outline: 1px solid slategrey;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    font-size: 15px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+h1, h2, p, a, span {
+    color: #F4F4F4;
+}
+
+.block {
+    padding-top: 5px;
+    background: #828282;
+}
+.menu-box {
+    width: 250px;
+}
+
+.menu-box-menu {
+    height: 500px;
+    overflow: auto;
+    padding-top: 5px;
+}
+
+.menu-box-menu li {
+    height: 80px;
+    position: relative;
+}
+
+.menu-box-tab {
+    padding: 0 5px;
+    align-items: center;
+    border-bottom: 1px solid #3f556d;
+    display: flex;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.menu-box-tab:hover {
+    background: #999999;
+    text-decoration: none;
+}
+
+
+.menu-box-tab .profile-info {
+    margin-left: 10px;
+    position: relative;
+    height: 80px;
+    width: 145px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.profile-name {
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: medium;
+    color: #F4F4F4;
+}
+
+.group-name {
+    font-size: medium;
+    color: #BEBEBE;
+}
+
+.profile-picture {
+    border-radius: 100%;
+    overflow: hidden;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+}
+
+.small-profile-picture {
+    border: 2px solid #E6C500;
+    width: 40px;
+    height: 40px;
+    margin-left: 5px;
+}
+
+.search-box {
+    height: 25px;
+    margin: 0 5px 5px 5px;
+    display: flex;
+    justify-content: space-around;
+    border-radius: 20px;
+    background: #F4F4F4;
+
+}
+
+.search-icon {
+    align-self: center;
+    width: 16px;
+    height: 16px;
+    background: url("../images/assets/search.png");
+}
+
+.search-input {
+    background: #F4F4F4;
+    border: none;
+    outline: none;
+    display: inline-flex;
+}
+.search-input:focus {
+    outline: none;
+}
+
+.circle {
+    width: 13px;
+    height: 13px;
+    border-radius: 50px;
+    background: #54FF9F
+}
+
+.arrow {
+    margin-left: 5px;
+    border: none;
+    width: 15px;
+    height: 15px;
+    background-image: url("../images/assets/next.png");
+}

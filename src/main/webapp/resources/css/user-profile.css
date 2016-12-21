@@ -1,0 +1,138 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.user-profile-light {
+    width: 300px;
+    height: 500px;
+    background: #828282;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-profile-dark {
+    width: 300px;
+    height: 150px;
+    background: #2D2D2C;
+}
+
+.user-name {
+    align-items: center;
+    display: flex;
+    height: 40px;
+    color: #F4F4F4;
+    font-size: larger;
+}
+
+.user-group {
+    align-items: center;
+    display: flex;
+    height: 30px;
+    color: #F4F4F4;
+    font-size: medium;
+}
+
+.center {
+    justify-content: center;
+    flex-direction: column;
+}
+
+.big-profile-picture {
+    margin: 0 auto;
+    border: 2px solid #E6C500;
+    width: 100px;
+    height: 100px;
+}
+
+.profile-picture {
+    border-radius: 100%;
+    overflow: hidden;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.user-content {
+    display: flex;
+}
+
+.user-color {
+    width: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 0 30px 10px;
+}
+
+.label {
+    width: 70px;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 25px;
+}
+
+.label-icon {
+    align-self: flex-end;
+    margin-right: 3px;
+}
+
+.label-name {
+    color: #F4F4F4;
+    font-size: smaller;
+    align-self: flex-end;
+    padding-bottom: 2px;
+}
+
+.color {
+    width: 13px;
+    height: 13px;
+    border-radius: 50px;
+    background: #54FF9F;
+}
+
+.user-fields {
+    margin-top: 20px;
+
+}
+
+.style-line {
+    height: 43px;
+}
+
+.style-line img {
+    height: 43px;
+    width: 22px;
+}
+
+.user-fields li {
+    height: 45px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.field-type {
+    align-self: center;
+}
+
+.field-value {
+    color: #F4F4F4;
+    align-self: center;
+    flex: 1 0 auto;
+    text-align: right;
+    margin-right: 20px;
+}
+
+.user-field {
+    display: flex;
+    flex-direction: row;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.extract-actions {
+    height: 100px;
+    display: flex;
+    justify-content: space-around;
+}
