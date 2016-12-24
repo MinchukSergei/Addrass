@@ -1,0 +1,30 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.main-container {
+    width: 870px;
+    margin: 30px auto 0 auto;
+    background: #f2dede;
+    display: flex;
+    flex-direction: row;
+}
+
+.user-header {
+    height: 50px;
+    background: #2D2D2C;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: center;
+}
+
+.header-label {
+    justify-content: center;
+    align-self: center;
+    color: #F4F4F4;
+    font-size: 25px;
+    font-family: sans-serif;
+}
+

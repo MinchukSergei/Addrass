@@ -3,11 +3,16 @@
 angular.module('userProfile')
     .component('userProfile', {
         templateUrl: '/resources/js/angular/user-profile/user-profile.template.html',
-        controller: ['User',
-            function UserProfileController(User) {
-                var self = this;
+        controller: ['User', '$scope',
+            function UserProfileController(User, $scope) {
+                this.assetPrefix = 'resources/images/assets/';
 
-                self.user = User.getUser();
+                this.photoPrefix = 'icon/';
+                this.user = $scope.$parent.$parent.selectedUser;
+
+                this.allUsers = function() {
+                    $scope.$emit('allUsers');
+                };
             }
         ]
     });

@@ -4,6 +4,11 @@
     <title>AddrAss</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/user-list.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/user-profile.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/main.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/calendar.css">
+
+    <script defer type="text/javascript" src="${pageContext.request.contextPath}/resources/js/calendar/moment.js"></script>
+    <script defer type="text/javascript" src="${pageContext.request.contextPath}/resources/js/calendar/calendar.js"></script>
 
     <script type="text/javascript" src="webjars/angularjs/1.5.9/angular.min.js"></script>
     <script type="text/javascript" src="webjars/angularjs/1.5.9/angular-resource.min.js"></script>
@@ -36,10 +41,16 @@
 
 </head>
 <body>
-<div ng-controller="userPart">
-    <div ng-switch on="selected">
-        <user-list ng-switch-when="friends"></user-list>
-        <user-profile ng-switch-when="profile"></user-profile>
+<div class="main-container">
+    <div ng-controller="userPart">
+        <div ng-switch on="selected">
+            <user-list ng-switch-when="friends"></user-list>
+            <user-profile ng-switch-when="profile"></user-profile>
+        </div>
+    </div>
+
+    <div class="calendar-container">
+        <div id="calendar"></div>
     </div>
 </div>
 </body>

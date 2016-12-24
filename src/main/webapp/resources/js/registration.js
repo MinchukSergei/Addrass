@@ -108,6 +108,41 @@ $('#registerBtn').on('click', function (e) {
     });
 });
 
+$('#loginForm').on('submit', function (e) {
+    e.preventDefault();
+    var login = $.trim($('#logLogin').val());
+    var password = $.trim($('#logPassword').val());
+
+
+    if (login === '') {
+        checkEmpty($('#logLogin'));
+        return;
+    }
+    if (password === '') {
+        checkEmpty($('#logPassword'));
+        return;
+    }
+
+    var userData = {
+        "j_username": login,
+        "j_password": password
+    };
+    $.ajax({
+        contentType: 'application/x-www-form-urlencoded',
+        url: '/j_spring_security_check',
+        type: 'post',
+        statusCode: {
+            200: function() {
+                window.location.replace("/main");
+            },
+            401: function() {
+                show2sec($('#incorrectCredentials'));
+            }
+        },
+        data: $('#loginForm').serialize()
+    });
+});
+
 function checkEmpty(el) {
     var $el = el,
         x = 450,
@@ -118,11 +153,6 @@ function checkEmpty(el) {
         $el.css("background", originalColor);
     }, x);
 }
-
-$(document).ready(function () {
-    var el = $('#incorrectCredentials');
-    show2sec(el)
-});
 
 function show2sec(el){
     if (el) {

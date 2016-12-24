@@ -17,6 +17,8 @@
     outline: 1px solid slategrey;
 }
 
+
+
 ul {
     list-style-type: none;
     margin: 0;
@@ -36,15 +38,14 @@ h1, h2, p, a, span {
 }
 
 .block {
-    padding-top: 5px;
     background: #828282;
 }
 .menu-box {
-    width: 250px;
+    width: 300px;
 }
 
 .menu-box-menu {
-    height: 500px;
+    min-height: 500px;
     overflow: auto;
     padding-top: 5px;
 }
@@ -52,12 +53,12 @@ h1, h2, p, a, span {
 .menu-box-menu li {
     height: 80px;
     position: relative;
+    margin-bottom: 2px;
 }
 
 .menu-box-tab {
     padding: 0 5px;
     align-items: center;
-    border-bottom: 1px solid #3f556d;
     display: flex;
     cursor: pointer;
     box-shadow: 0 0 5px rgba(0,0,0,0.5);
@@ -73,7 +74,7 @@ h1, h2, p, a, span {
     margin-left: 10px;
     position: relative;
     height: 80px;
-    width: 145px;
+    width: 180px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -101,8 +102,8 @@ h1, h2, p, a, span {
 
 .small-profile-picture {
     border: 2px solid #E6C500;
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     margin-left: 5px;
 }
 
@@ -110,13 +111,15 @@ h1, h2, p, a, span {
     height: 25px;
     margin: 0 5px 5px 5px;
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-start;
     border-radius: 20px;
     background: #F4F4F4;
 
 }
 
 .search-icon {
+    margin-left: 5px;
+    margin-right: 10px;
     align-self: center;
     width: 16px;
     height: 16px;

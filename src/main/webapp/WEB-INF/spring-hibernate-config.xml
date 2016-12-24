@@ -42,6 +42,7 @@
         <property name="url" value="jdbc:mysql://78.46.211.29:3306/minchuk"/>
         <property name="username" value="${DB_USER}"/>
         <property name="password" value="${DB_PASS}"/>
+
     </bean>
 
     <context:annotation-config/>

@@ -7,8 +7,15 @@ angular.module('userPart')
             $scope.selectionType = types;
             $scope.selected = types[0];
 
-            $scope.user = {
-                id: 2
-            };
+            $scope.selectedUser = null;
+
+            $scope.$on('changeUser', function(event, data) {
+                $scope.selected = types[2];
+                $scope.selectedUser = data;
+            });
+
+            $scope.$on('allUsers', function(event, data) {
+                $scope.selected = types[0];
+            });
         }
         ]);

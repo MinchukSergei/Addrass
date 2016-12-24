@@ -1,14 +1,20 @@
 <div class="menu-box block"> <!-- MENU BOX (LEFT-CONTAINER) -->
+    <div class="user-header">
+        <div class="user-header">
+            <div class="header-label">Contacts</div>
+        </div>
+    </div>
+
     <div class="search-box">
         <div class="search-icon"></div>
-        <input class="search-input">
+        <input class="search-input" ng-model="searchText">
     </div>
     <ul class="menu-box-menu">
-        <li ng-repeat="user in $ctrl.users">
-            <div class="menu-box-tab">
+        <li ng-repeat="user in $ctrl.users | filter:searchText">
+            <div class="menu-box-tab" ng-click="$ctrl.setSelectedIndex($index)">
                 <span class="circle" style="background-color: {{user.fkUserColor.color | hexify}}"></span>
                 <div class="profile-picture small-profile-picture">
-                    <img width="40px" ng-src="{{$ctrl.photoPrefix + user.fkUserFriend.fkUserPhoto.iconName}}">
+                    <img width="100%" ng-src="{{$ctrl.photoPrefix + user.fkUserFriend.fkUserPhoto.iconName}}">
                 </div>
                 <div class="profile-info">
                     <div class="profile-name">
@@ -18,7 +24,7 @@
                         {{user.fkUserFriend.userPhoneField}}
                     </div>
                 </div>
-                <div class="arrow" ng-click="$ctrl.setSelectedId(user.fkUserFriend.pkId)"></div>
+                <div class="arrow"></div>
 
             </div>
         </li>

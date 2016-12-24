@@ -1,19 +1,25 @@
 <div class="user-profile-light">
+    <div class="user-header">
+        <div class="back-label">
+            <div class="back-btn" ng-click="$ctrl.allUsers()">Back</div>
+            <div class="back-lab">Contacts</div>
+        </div>
+    </div>
     <div class="user-profile-dark">
-        <div class="user-name center">Sergei Zyazulkin</div>
-        <div class="user-group center">Gods</div>
+        <div class="user-name center">{{$ctrl.user.fkUserFriend.userName}}</div>
+        <div class="user-group center">{{$ctrl.user.fkUserGroup.name}}</div>
         <div class="user-content">
             <div class="user-color">
-                <div class="color"></div>
+                <div class="color" style="background-color: {{$ctrl.user.fkUserColor.color | hexify}}"></div>
             </div>
             <div class="profile-picture big-profile-picture">
                 <img width="100px" alt="Anne Hathaway picture"
-                     src="http://upload.wikimedia.org/wikipedia/commons/e/e1/Anne_Hathaway_Face.jpg">
+                     ng-src="{{$ctrl.photoPrefix + $ctrl.user.fkUserFriend.fkUserPhoto.iconName}}">
             </div>
             <div class="label">
                 <div class="label-icon">
                     <img width="15px" height="15px" alt="Anne Hathaway picture"
-                         ng-src="{{ctrl.assetPrefix}}calendar-light.png">
+                         ng-src="{{$ctrl.assetPrefix}}calendar-light.png">
                 </div>
                 <div class="label-name">Events</div>
             </div>
@@ -23,56 +29,56 @@
             <li>
                 <div class="user-field">
                     <div class="style-line">
-                        <img ng-src="{{ctrl.assetPrefix}}style.png">
+                        <img ng-src="{{$ctrl.assetPrefix}}style.png">
                     </div>
                     <div class="field-type">
-                        <img width="18" height="18" ng-src="{{ctrl.assetPrefix}}phone-light.png">
+                        <img width="18" height="18" ng-src="{{$ctrl.assetPrefix}}phone-light.png">
                     </div>
-                    <div class="field-value">+375442281488</div>
+                    <div class="field-value">{{$ctrl.user.fkUserFriend.userPhoneField}}</div>
                 </div>
             </li>
             <li>
                 <div class="user-field">
                     <div class="style-line">
-                        <img ng-src="{{ctrl.assetPrefix}}style.png">
+                        <img ng-src="{{$ctrl.assetPrefix}}style.png">
                     </div>
                     <div class="field-type">
-                        <img width="18" height="18" ng-src="{{ctrl.assetPrefix}}mail-light.png">
+                        <img width="18" height="18" ng-src="{{$ctrl.assetPrefix}}mail-light.png">
                     </div>
-                    <div class="field-value">god@god.god</div>
+                    <div class="field-value">{{$ctrl.user.fkUserFriend.userEmailField}}</div>
                 </div>
             </li>
             <li>
                 <div class="user-field">
                     <div class="style-line">
-                        <img ng-src="{{ctrl.assetPrefix}}style.png">
+                        <img ng-src="{{$ctrl.assetPrefix}}style.png">
                     </div>
                     <div class="field-type">
-                        <img width="18" height="18" ng-src="{{ctrl.assetPrefix}}factory-light.png">
+                        <img width="18" height="18" ng-src="{{$ctrl.assetPrefix}}factory-light.png">
                     </div>
-                    <div class="field-value">God GmbH</div>
+                    <div class="field-value">{{$ctrl.user.fkUserFriend.userOrganizationField}}</div>
                 </div>
             </li>
             <li>
                 <div class="user-field">
                     <div class="style-line">
-                        <img ng-src="{{ctrl.assetPrefix}}style.png">
+                        <img ng-src="{{$ctrl.assetPrefix}}style.png">
                     </div>
                     <div class="field-type">
-                        <img width="18" height="18" ng-src="{{ctrl.assetPrefix}}pin-light.png">
+                        <img width="18" height="18" ng-src="{{$ctrl.assetPrefix}}pin-light.png">
                     </div>
-                    <div class="field-value">Heaven</div>
+                    <div class="field-value">{{$ctrl.user.fkUserFriend.userAddressField}}</div>
                 </div>
             </li>
             <li>
                 <div class="user-field">
                     <div class="style-line">
-                        <img ng-src="{{ctrl.assetPrefix}}style.png">
+                        <img ng-src="{{$ctrl.assetPrefix}}style.png">
                     </div>
                     <div class="field-type">
-                        <img width="18" height="18"ng-src="{{ctrl.assetPrefix}}notes-light.png">
+                        <img width="18" height="18" ng-src="{{$ctrl.assetPrefix}}notes-light.png">
                     </div>
-                    <div class="field-value">Very good man (boss)</div>
+                    <div class="field-value">{{$ctrl.user.fkUserFriend.userNotesField}}</div>
                 </div>
             </li>
         </ul>
@@ -81,14 +87,14 @@
             <div class="label">
                 <div class="label-icon">
                     <img width="15px" height="15px" alt="Anne Hathaway picture"
-                         ng-src="{{ctrl.assetPrefix}}delete-light.png">
+                         ng-src="{{$ctrl.assetPrefix}}delete-light.png">
                 </div>
                 <div class="label-name">Delete</div>
             </div>
             <div class="label">
                 <div class="label-icon">
                     <img width="15px" height="15px" alt="Anne Hathaway picture"
-                         ng-src="{{ctrl.assetPrefix}}blacklist-inactive.png">
+                         ng-src="{{$ctrl.assetPrefix}}blacklist-inactive.png">
                 </div>
                 <div class="label-name">Blacklist</div>
             </div>

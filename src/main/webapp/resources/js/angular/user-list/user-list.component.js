@@ -16,7 +16,9 @@ angular.module('userList')
                     self.users = data;
                 });
 
-
+                this.setSelectedIndex = function(index) {
+                    $scope.$emit('changeUser', self.users[index]);
+                }
             }
         ]
         //scope : {

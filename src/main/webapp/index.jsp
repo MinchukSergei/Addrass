@@ -16,13 +16,9 @@
     <div id="alreadyExists" class="err" style="display: none">
         <span>User Already Exists</span>
     </div>
-
-    <c:if test="${not empty error}">
-        <div class="err" id="incorrectCredentials">
-            <span>${error}</span>
-            <c:remove var="error" scope="session"/>
-        </div>
-    </c:if>
+    <div id="incorrectCredentials" class="err" style="display: none">
+        <span>Incorrect credentials</span>
+    </div>
 
     <div class="tab-group">
         <div class="tab" href="#signup">
@@ -119,24 +115,24 @@
             <div class="tab-content">
                 <div class="tab-main-name">Welcome back!</div>
 
-                <form action="<c:url value="/j_spring_security_check"/>" method="post">
+                <form id="loginForm" method="post">
 
                     <div class="field-wrap">
                         <label>
                             Login<span class="req">*</span>
                         </label>
-                        <input name="j_username" type="text" required autocomplete="off"/>
+                        <input id="logLogin" name="j_username" type="text" required autocomplete="off"/>
                     </div>
 
                     <div class="field-wrap">
                         <label>
                             Password<span class="req">*</span>
                         </label>
-                        <input name="j_password" type="password" required autocomplete="new-password"/>
+                        <input id="logPassword" name="j_password" type="password" required autocomplete="new-password"/>
                     </div>
 
                     <div class="button-wrapper">
-                        <button type="submit" class="button-big">
+                        <button id="loginBtn" type="submit" class="button-big">
                             LOG IN
                         </button>
                     </div>

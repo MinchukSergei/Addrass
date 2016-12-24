@@ -4,9 +4,33 @@
     box-sizing: border-box;
 }
 
+.back-btn {
+    width: 90px;
+    font-size: 15px;
+    align-self: center;
+    color: #F4F4F4;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.back-label {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-self: center;
+
+}
+.back-lab {
+    color: #F4F4F4;
+    font-size: 25px;
+    font-family: sans-serif;
+}
+
+
+
 .user-profile-light {
     width: 300px;
-    height: 500px;
+    min-height: 585px;
     background: #828282;
     display: flex;
     flex-direction: column;
@@ -98,16 +122,16 @@
 }
 
 .style-line {
-    height: 43px;
+    height: 45px;
 }
 
 .style-line img {
-    height: 43px;
+    height: 45px;
     width: 22px;
 }
 
 .user-fields li {
-    height: 45px;
+    height: 50px;
     display: flex;
     flex-direction: column;
     justify-content: center;
